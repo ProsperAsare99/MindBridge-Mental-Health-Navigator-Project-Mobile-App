@@ -1,8 +1,9 @@
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
+import storage from '../utils/storage';
 
 // Placeholder for server IP - To be updated by user or environment variable
-const BASE_URL = 'http://127.0.0.1:5000/api';
+// Use a fixed placeholder for the server IP - Update this for local testing
+const BASE_URL = 'http://192.168.1.100:5000/api';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -15,7 +16,7 @@ const apiClient = axios.create({
 // Request Interceptor: Add JWT Token to headers
 apiClient.interceptors.request.use(
   async (config) => {
-    const token = await SecureStore.getItemAsync('userToken');
+    const token = await storage.getItemAsync('userToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,7 +33,7 @@ apiClient.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       // Clear token on authentication failure
-      await SecureStore.deleteItemAsync('userToken');
+      await storage.deleteItemAsync('userToken');
       // Potential redirect to login logic here
     }
     return Promise.reject(error);

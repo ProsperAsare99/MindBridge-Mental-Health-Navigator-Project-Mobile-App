@@ -1,31 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { useTheme } from '../src/context/ThemeContext';
 
-export default function Home() {
-  const { colors, theme } = useTheme();
-
+export default function Index() {
+  const { colors } = useTheme();
+  
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[styles.title, { color: colors.text }]}>MindBridge</Text>
-      <Text style={[styles.subtitle, { color: colors.primary }]}>
-        Adaptive Mode: {theme.toUpperCase()}
-      </Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+      <ActivityIndicator size="large" color={colors.primary} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontSize: 18,
-    marginTop: 8,
-  },
-});
