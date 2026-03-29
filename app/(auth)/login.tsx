@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Alert, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthContext } from '../../src/context/AuthContext';
 import { useTheme } from '../../src/context/ThemeContext';
@@ -53,7 +53,11 @@ export default function Login() {
     >
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={[styles.title, { color: colors.text }]}>MindBridge</Text>
+          <Image 
+            source={require('../../assets/logo.png')} 
+            style={styles.logo} 
+            resizeMode="contain"
+          />
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Your mental health navigator</Text>
         </View>
 
@@ -126,6 +130,11 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 48,
     alignItems: 'center',
+  },
+  logo: {
+    width: 200,
+    height: 100,
+    marginBottom: -10, // Adjust because logo has built-in spacing
   },
   title: {
     fontSize: 40,

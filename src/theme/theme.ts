@@ -22,7 +22,10 @@ export const COLORS = {
       secondary: '#E0E7FF', // Indigo 100
       accent: '#818CF8', // Indigo 400
       background: '#F5F7FF',
+      card: '#FFFFFF',
       text: '#312E81',
+      textSecondary: '#6366F1', // Indigo 500
+      border: '#E0E7FF',
       icon: 'Zen',
     },
     calm: {
@@ -30,7 +33,10 @@ export const COLORS = {
       secondary: '#CCFBF1', // Teal 100
       accent: '#2DD4BF', // Teal 400
       background: '#F0FDFA',
+      card: '#FFFFFF',
       text: '#134E48',
+      textSecondary: '#14B8A6', // Teal 500
+      border: '#CCFBF1',
       icon: 'Focus',
     },
     energy: {
@@ -38,7 +44,10 @@ export const COLORS = {
       secondary: '#E0F2FE', // Sky 100
       accent: '#38BDF8', // Sky 400
       background: '#F0F9FF',
+      card: '#FFFFFF',
       text: '#0C4A6E',
+      textSecondary: '#0EA5E9', // Sky 500
+      border: '#E0F2FE',
       icon: 'Action',
     },
   },

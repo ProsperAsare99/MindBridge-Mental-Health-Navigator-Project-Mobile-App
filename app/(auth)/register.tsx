@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ActivityIndicator, Alert, ScrollView, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthContext } from '../../src/context/AuthContext';
 import { useTheme } from '../../src/context/ThemeContext';
@@ -51,6 +51,11 @@ export default function Register() {
     >
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
+          <Image 
+            source={require('../../assets/logo.png')} 
+            style={styles.logo} 
+            resizeMode="contain"
+          />
           <Text style={[styles.title, { color: colors.text }]}>Join MindBridge</Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Start your journey to better mental health</Text>
         </View>
@@ -146,6 +151,12 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 40,
+    alignItems: 'center',
+  },
+  logo: {
+    width: 120,
+    height: 60,
+    marginBottom: 8,
   },
   title: {
     fontSize: 32,
