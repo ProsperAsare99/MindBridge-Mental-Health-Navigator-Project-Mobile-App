@@ -12,6 +12,7 @@ interface User {
   studentId?: string;
   phoneNumber?: string;
   program?: string;
+  academicLevel?: string | number;
   isVerified?: boolean;
 }
 

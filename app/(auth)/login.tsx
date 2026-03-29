@@ -60,7 +60,7 @@ export default function Login() {
 
     try {
       await signIn(email, password);
-      // AuthContext handles the state, router will automatically redirect if protected
+      // No manual redirect here; _layout.tsx will handle it based on onboarding status
     } catch (error: any) {
       console.error(error);
       Alert.alert('Login Failed', error.message || 'Could not establish a secure connection.');

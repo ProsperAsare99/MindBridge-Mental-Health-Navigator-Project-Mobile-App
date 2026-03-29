@@ -18,18 +18,28 @@ function RootLayoutNav() {
     const inAuthGroup = segments[0] === '(auth)';
     const onLandingPage = !segments[0] || segments[0] === 'index';
     const isOnboarding = segments[ segments.length - 1 ] === 'onboarding';
+    const isComplete = user?.onboardingCompleted === true;
+    
+    // DEBUG LOGS (Remove after verification)
+    console.log('[Layout] Session Update:', {
+      token: !!token,
+      onboardingCompleted: user?.onboardingCompleted,
+      segments,
+      isComplete,
+      isOnboarding
+    });
 
     if (!token && !inAuthGroup && !onLandingPage) {
       // Redirect to landing if not authenticated and not in auth group/landing
       router.replace('/');
     } else if (token) {
-      const isComplete = user?.onboardingCompleted === true;
-      
       if (!isComplete && !isOnboarding) {
         // Redirect to onboarding if authenticated but onboarding is not complete
+        console.log('[Layout] Redirecting to Onboarding');
         router.replace('/(auth)/onboarding');
       } else if (isComplete && (inAuthGroup || onLandingPage || isOnboarding)) {
         // Redirect to dashboard if authenticated and onboarding complete
+        console.log('[Layout] Redirecting to Dashboard');
         router.replace('/(tabs)/dashboard');
       }
     }
