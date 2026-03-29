@@ -16,12 +16,13 @@ function RootLayoutNav() {
     if (isLoading) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const onLandingPage = !segments[0] || segments[0] === 'index';
 
-    if (!token && !inAuthGroup) {
-      // Redirect to login if not authenticated and not in auth group
-      router.replace('/(auth)/login');
-    } else if (token && inAuthGroup) {
-      // Redirect to dashboard if authenticated and in auth group
+    if (!token && !inAuthGroup && !onLandingPage) {
+      // Redirect to landing if not authenticated and not in auth group/landing
+      router.replace('/');
+    } else if (token && (inAuthGroup || onLandingPage)) {
+      // Redirect to dashboard if authenticated but trying to access auth/landing
       router.replace('/(tabs)/dashboard');
     }
   }, [token, isLoading, segments]);
