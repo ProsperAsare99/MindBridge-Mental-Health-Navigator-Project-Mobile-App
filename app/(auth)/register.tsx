@@ -125,13 +125,13 @@ export default function Register() {
       <AnimatedBackground />
       
       <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardView}
       >
         <ScrollView 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps="always"
         >
           <Animated.View 
             entering={FadeInUp.springify().damping(12).stiffness(90)}
@@ -468,8 +468,9 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
     padding: 24,
+    paddingTop: Platform.OS === 'ios' ? 70 : 50,
+    paddingBottom: 60,
   },
   cardContainer: {
     borderRadius: 24,

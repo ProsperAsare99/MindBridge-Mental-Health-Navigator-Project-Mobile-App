@@ -193,7 +193,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    transition: 'all 0.2s ease',
   },
   selectTriggerActive: {
     borderColor: '#4f46e5',

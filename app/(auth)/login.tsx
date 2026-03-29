@@ -75,13 +75,13 @@ export default function Login() {
       <AnimatedBackground />
       
       <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardView}
       >
         <ScrollView 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps="always"
         >
           <Animated.View 
             entering={FadeInUp.springify().damping(12).stiffness(90)}
@@ -240,8 +240,9 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'center',
-    padding: 24,
+    padding: 16,
+    paddingTop: Platform.OS === 'ios' ? 60 : 50,
+    paddingBottom: 40,
   },
   cardContainer: {
     borderRadius: 24,
@@ -253,35 +254,35 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
   card: {
-    padding: 32,
+    padding: 24,
     backgroundColor: 'rgba(255, 255, 255, 0.45)', // subtle white tint
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.7)',
   },
   header: {
-    marginBottom: 24,
+    marginBottom: 16,
     alignItems: 'center',
   },
   logo: {
-    width: 60,
-    height: 60,
-    marginBottom: 16,
-    borderRadius: 16,
+    width: 48,
+    height: 48,
+    marginBottom: 8,
+    borderRadius: 14,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '800', // bolder
     color: '#111827',
     marginBottom: 4,
     letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#4b5563',
     fontWeight: '500',
   },
   socialContainer: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   socialButton: {
     flexDirection: 'row',
@@ -290,8 +291,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.6)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 14,
-    padding: 14,
+    borderRadius: 12,
+    padding: 12,
   },
   socialIconPlaceholder: {
     marginRight: 8,
@@ -309,7 +310,7 @@ const styles = StyleSheet.create({
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   line: {
     flex: 1,
@@ -323,19 +324,19 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   form: {
-    gap: 20,
+    gap: 16,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   required: {
     color: '#4f46e5', // Brand purple
   },
   inputWrapper: {
-    height: 52, // Slightly taller
+    height: 46,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.8)',
@@ -364,7 +365,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   loginButtonContainer: {
-    marginTop: 8,
+    marginTop: 4,
     borderRadius: 14,
     overflow: 'hidden',
     shadowColor: '#4f46e5',
@@ -374,7 +375,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   loginButtonGradient: {
-    height: 56, // Taller, premium feel
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -386,13 +387,13 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#ffffff',
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '700',
     letterSpacing: 0.3,
   },
   forgotPassword: {
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 4,
   },
   forgotText: {
     color: '#4f46e5',
@@ -402,7 +403,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 32,
+    marginTop: 24,
   },
   footerText: {
     fontSize: 15,

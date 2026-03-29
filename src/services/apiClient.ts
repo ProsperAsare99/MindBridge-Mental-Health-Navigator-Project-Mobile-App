@@ -1,9 +1,9 @@
 import axios from 'axios';
 import storage from '../utils/storage';
 
-// Placeholder for server IP - To be updated by user or environment variable
-// Use a fixed placeholder for the server IP - Update this for local testing
-const BASE_URL = 'http://192.168.1.100:5000/api';
+// Uses Expo's built-in environment variables from the .env file
+// Fallback is 192.168.1.100 for emulators or testing if .env is not found
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.100:5000/api';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
