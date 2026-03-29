@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MindBridge-Mental-Health-Navigator-Project-Mobile-App",
-    "slug": "MindBridge-Mental-Health-Navigator-Project-Mobile-App",
+    "name": "MindBridge",
+    "slug": "mindbridge",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
