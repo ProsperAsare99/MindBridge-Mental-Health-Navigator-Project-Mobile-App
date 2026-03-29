@@ -62,22 +62,20 @@ export default function Login() {
           <Animated.View entering={FadeInUp.duration(1000).springify()}>
             <Image 
               source={require('../../assets/logo.png')} 
-              style={styles.logo} 
+              style={[styles.logo, { borderRadius: 40, borderWidth: 1, borderColor: colors.border + '33' }]} 
               resizeMode="contain"
             />
           </Animated.View>
-          <Animated.Text 
-            entering={FadeInDown.delay(200).duration(800)}
-            style={[styles.title, { color: colors.text }]}
-          >
-            Welcome Back
-          </Animated.Text>
-          <Animated.Text 
-            entering={FadeInDown.delay(300).duration(800)}
-            style={[styles.subtitle, { color: colors.textSecondary }]}
-          >
-            Continue your journey to resonance.
-          </Animated.Text>
+          <Animated.View entering={FadeInDown.delay(200).duration(800)}>
+            <Text style={[styles.title, { color: colors.text }]}>
+              Welcome Back
+            </Text>
+          </Animated.View>
+          <Animated.View entering={FadeInDown.delay(300).duration(800)}>
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+              Continue your journey to resonance.
+            </Text>
+          </Animated.View>
         </View>
 
         <View style={styles.form}>
@@ -204,6 +202,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginBottom: 24,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 32,

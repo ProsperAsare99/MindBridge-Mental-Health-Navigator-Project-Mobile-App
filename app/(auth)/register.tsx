@@ -74,22 +74,20 @@ export default function Register() {
             <Animated.View entering={FadeInUp.duration(1000).springify()}>
               <Image 
                 source={require('../../assets/logo.png')} 
-                style={styles.logo} 
+                style={[styles.logo, { borderRadius: 30, borderWidth: 1, borderColor: colors.border + '33' }]} 
                 resizeMode="contain"
               />
             </Animated.View>
-            <Animated.Text 
-              entering={FadeInDown.delay(200).duration(800)}
-              style={[styles.title, { color: colors.text }]}
-            >
-              New Resonance
-            </Animated.Text>
-            <Animated.Text 
-              entering={FadeInDown.delay(300).duration(800)}
-              style={[styles.subtitle, { color: colors.textSecondary }]}
-            >
-              Initialize your MindBridge profile.
-            </Animated.Text>
+            <Animated.View entering={FadeInDown.delay(200).duration(800)}>
+              <Text style={[styles.title, { color: colors.text }]}>
+                New Resonance
+              </Text>
+            </Animated.View>
+            <Animated.View entering={FadeInDown.delay(300).duration(800)}>
+              <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+                Initialize your MindBridge profile.
+              </Text>
+            </Animated.View>
           </View>
 
           <View style={styles.form}>
@@ -269,6 +267,7 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginBottom: 24,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 32,
