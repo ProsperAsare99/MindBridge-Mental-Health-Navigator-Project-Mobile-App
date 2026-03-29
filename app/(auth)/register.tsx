@@ -9,37 +9,40 @@ import {
   Platform, 
   ActivityIndicator, 
   Alert, 
-  ScrollView, 
-  Image, 
-  StatusBar 
+  StatusBar,
+  ScrollView,
+  Image
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthContext } from '../../src/context/AuthContext';
-import { useTheme } from '../../src/context/ThemeContext';
-import { User, Mail, Lock, CheckCircle, ArrowRight, Github, Chrome } from 'lucide-react-native';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+import DotMap from '../../src/components/DotMap';
 
 export default function Register() {
   const { login } = useAuthContext();
-  const { colors } = useTheme();
   const router = useRouter();
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleRegister = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Incomplete Form', 'Please fill in all resonance parameters.');
+      Alert.alert('Incomplete Form', 'Please fill in all required fields.');
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Mismatch', 'Security keys do not match.');
+      Alert.alert('Mismatch', 'Passwords do not match.');
       return;
     }
 
@@ -52,197 +55,218 @@ export default function Register() {
       router.replace('/(tabs)/dashboard');
     } catch (error: any) {
       console.error(error);
-      Alert.alert('Initialization Failed', 'Could not synchronize with the MindBridge network.');
+      Alert.alert('Registration Failed', 'Could not create your MindBridge account.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle={colors.background === '#f8fafc' ? 'dark-content' : 'light-content'} />
+    <LinearGradient 
+      colors={['#eff6ff', '#e0e7ff']} 
+      style={styles.container}
+    >
+      <StatusBar barStyle="dark-content" />
+      <DotMap />
       
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
         <ScrollView 
-          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <View style={styles.header}>
-            <Animated.View entering={FadeInUp.duration(1000).springify()}>
-              <Image 
-                source={require('../../assets/logo.png')} 
-                style={[styles.logo, { borderRadius: 50, borderWidth: 1, borderColor: colors.border + '33', backgroundColor: 'transparent' }]} 
-              />
-            </Animated.View>
-            <Animated.View entering={FadeInDown.delay(200).duration(800)}>
-              <Text style={[styles.title, { color: colors.text }]}>
-                New Resonance
-              </Text>
-            </Animated.View>
-            <Animated.View entering={FadeInDown.delay(300).duration(800)}>
-              <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-                Initialize your MindBridge profile.
-              </Text>
-            </Animated.View>
-          </View>
-
-          <View style={styles.form}>
-            <Animated.View entering={FadeInDown.delay(400)}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>FULL NAME</Text>
-              <View style={[
-                styles.inputWrapper, 
-                { 
-                  backgroundColor: colors.stroke,
-                  borderColor: focusedField === 'name' ? colors.primary : 'transparent',
-                  borderWidth: 1.5
-                }
-              ]}>
-                <User size={18} color={focusedField === 'name' ? colors.primary : colors.textSecondary} />
-                <TextInput
-                  style={[styles.input, { color: colors.text }]}
-                  placeholder="Identity Name"
-                  placeholderTextColor="#94a3b8"
-                  value={name}
-                  onChangeText={setName}
-                  onFocus={() => {
-                    setFocusedField('name');
-                    Haptics.selectionAsync();
-                  }}
-                  onBlur={() => setFocusedField(null)}
+          <Animated.View 
+            entering={FadeInUp.springify().damping(12).stiffness(90)}
+            style={styles.card}
+          >
+            {/* Header */}
+            <View style={styles.header}>
+              <Animated.View entering={FadeInDown.springify().delay(100)}>
+                <Image 
+                  source={require('../../assets/logo.png')} 
+                  style={styles.logo} 
                 />
-              </View>
-            </Animated.View>
-
-            <Animated.View entering={FadeInDown.delay(500)}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>EMAIL ADDRESS</Text>
-              <View style={[
-                styles.inputWrapper, 
-                { 
-                  backgroundColor: colors.stroke,
-                  borderColor: focusedField === 'email' ? colors.primary : 'transparent',
-                  borderWidth: 1.5
-                }
-              ]}>
-                <Mail size={18} color={focusedField === 'email' ? colors.primary : colors.textSecondary} />
-                <TextInput
-                  style={[styles.input, { color: colors.text }]}
-                  placeholder="resonance@mindbridge.com"
-                  placeholderTextColor="#94a3b8"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                  onFocus={() => {
-                    setFocusedField('email');
-                    Haptics.selectionAsync();
-                  }}
-                  onBlur={() => setFocusedField(null)}
-                />
-              </View>
-            </Animated.View>
-
-            <Animated.View entering={FadeInDown.delay(600)}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>PASSWORD</Text>
-              <View style={[
-                styles.inputWrapper, 
-                { 
-                  backgroundColor: colors.stroke,
-                  borderColor: focusedField === 'password' ? colors.primary : 'transparent',
-                  borderWidth: 1.5
-                }
-              ]}>
-                <Lock size={18} color={focusedField === 'password' ? colors.primary : colors.textSecondary} />
-                <TextInput
-                  style={[styles.input, { color: colors.text }]}
-                  placeholder="••••••••"
-                  placeholderTextColor="#94a3b8"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                  onFocus={() => {
-                    setFocusedField('password');
-                    Haptics.selectionAsync();
-                  }}
-                  onBlur={() => setFocusedField(null)}
-                />
-              </View>
-            </Animated.View>
-
-            <Animated.View entering={FadeInDown.delay(700)}>
-              <Text style={[styles.label, { color: colors.textSecondary }]}>CONFIRM SECURITY KEY</Text>
-              <View style={[
-                styles.inputWrapper, 
-                { 
-                  backgroundColor: colors.stroke,
-                  borderColor: focusedField === 'confirm' ? colors.primary : 'transparent',
-                  borderWidth: 1.5
-                }
-              ]}>
-                <CheckCircle size={18} color={focusedField === 'confirm' ? colors.primary : colors.textSecondary} />
-                <TextInput
-                  style={[styles.input, { color: colors.text }]}
-                  placeholder="••••••••"
-                  placeholderTextColor="#94a3b8"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry
-                  onFocus={() => {
-                    setFocusedField('confirm');
-                    Haptics.selectionAsync();
-                  }}
-                  onBlur={() => setFocusedField(null)}
-                />
-              </View>
-            </Animated.View>
-
-            <Animated.View entering={FadeInDown.delay(800)}>
-              <TouchableOpacity 
-                activeOpacity={0.8}
-                style={[styles.registerButton, { backgroundColor: colors.primary }]}
-                onPress={handleRegister}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <View style={styles.buttonInner}>
-                    <Text style={styles.registerButtonText}>Initialize Account</Text>
-                    <ArrowRight size={18} color="#fff" />
-                  </View>
-                )}
-              </TouchableOpacity>
-            </Animated.View>
-
-            <View style={styles.divider}>
-              <View style={[styles.line, { backgroundColor: colors.border, opacity: 0.2 }]} />
-              <Text style={[styles.dividerText, { color: colors.textSecondary }]}>QUICK INITIALIZATION</Text>
-              <View style={[styles.line, { backgroundColor: colors.border, opacity: 0.2 }]} />
+              </Animated.View>
+              <Animated.Text entering={FadeInDown.springify().delay(200)} style={styles.title}>
+                Create an account
+              </Animated.Text>
+              <Animated.Text entering={FadeInDown.springify().delay(300)} style={styles.subtitle}>
+                Start your wellness journey with MindBridge
+              </Animated.Text>
             </View>
 
-            <Animated.View entering={FadeInDown.delay(900)} style={styles.socialRow}>
-              <TouchableOpacity style={[styles.socialBtn, { backgroundColor: colors.stroke }]}>
-                <Chrome size={22} color={colors.text} />
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.socialBtn, { backgroundColor: colors.stroke }]}>
-                <Github size={22} color={colors.text} />
+            {/* Social Login */}
+            <Animated.View entering={FadeInDown.delay(400)} style={styles.socialContainer}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.socialButton} onPress={() => console.log('Google register')}>
+                <View style={styles.socialIconPlaceholder}>
+                  <Text style={styles.socialG}>G</Text>
+                </View>
+                <Text style={styles.socialButtonText}>Sign up with Google</Text>
               </TouchableOpacity>
             </Animated.View>
-          </View>
 
-          <Animated.View entering={FadeInDown.delay(1000)} style={styles.footer}>
-            <Text style={[styles.footerText, { color: colors.textSecondary }]}>
-              Already synchronized?{" "}
-            </Text>
-            <TouchableOpacity onPress={() => router.back()}>
-              <Text style={[styles.signInText, { color: colors.primary }]}>Access Dashboard</Text>
-            </TouchableOpacity>
+            {/* Divider */}
+            <Animated.View entering={FadeInDown.delay(500)} style={styles.divider}>
+              <View style={styles.line} />
+              <Text style={styles.dividerText}>or continue with email</Text>
+              <View style={styles.line} />
+            </Animated.View>
+
+            {/* Form */}
+            <View style={styles.form}>
+              <Animated.View entering={FadeInDown.delay(600)}>
+                <Text style={styles.label}>
+                  Full Name <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={[
+                  styles.inputWrapper,
+                  focusedField === 'name' && styles.inputWrapperFocused
+                ]}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="John Doe"
+                    placeholderTextColor="#9ca3af"
+                    value={name}
+                    onChangeText={setName}
+                    autoCapitalize="words"
+                    onFocus={() => {
+                      setFocusedField('name');
+                      Haptics.selectionAsync();
+                    }}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                </View>
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(700)}>
+                <Text style={styles.label}>
+                  Email <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={[
+                  styles.inputWrapper,
+                  focusedField === 'email' && styles.inputWrapperFocused
+                ]}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your email address"
+                    placeholderTextColor="#9ca3af"
+                    value={email}
+                    onChangeText={setEmail}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    onFocus={() => {
+                      setFocusedField('email');
+                      Haptics.selectionAsync();
+                    }}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                </View>
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(800)}>
+                <Text style={styles.label}>
+                  Password <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={[
+                  styles.inputWrapper,
+                  focusedField === 'password' && styles.inputWrapperFocused
+                ]}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Create a secure password"
+                    placeholderTextColor="#9ca3af"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!isPasswordVisible}
+                    onFocus={() => {
+                      setFocusedField('password');
+                      Haptics.selectionAsync();
+                    }}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOff size={20} color="#6b7280" />
+                    ) : (
+                      <Eye size={20} color="#6b7280" />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(900)}>
+                <Text style={styles.label}>
+                  Confirm Password <Text style={styles.required}>*</Text>
+                </Text>
+                <View style={[
+                  styles.inputWrapper,
+                  focusedField === 'confirm' && styles.inputWrapperFocused
+                ]}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Confirm your password"
+                    placeholderTextColor="#9ca3af"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={!isConfirmPasswordVisible}
+                    onFocus={() => {
+                      setFocusedField('confirm');
+                      Haptics.selectionAsync();
+                    }}
+                    onBlur={() => setFocusedField(null)}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                  >
+                    {isConfirmPasswordVisible ? (
+                      <EyeOff size={20} color="#6b7280" />
+                    ) : (
+                      <Eye size={20} color="#6b7280" />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+
+              <Animated.View entering={FadeInDown.delay(1000)}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.registerButtonContainer} onPress={handleRegister} disabled={isLoading}>
+                  <LinearGradient
+                    colors={['#3b82f6', '#4f46e5']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.registerButtonGradient}
+                  >
+                    {isLoading ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <View style={styles.buttonInner}>
+                        <Text style={styles.registerButtonText}>Create Account</Text>
+                        <ArrowRight size={18} color="#fff" />
+                      </View>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+              </Animated.View>
+
+            </View>
+
+            <Animated.View entering={FadeInDown.delay(1100)} style={styles.footer}>
+              <Text style={styles.footerText}>Already have an account? </Text>
+              <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+                <Text style={styles.signInText}>Sign in instead</Text>
+              </TouchableOpacity>
+            </Animated.View>
+
           </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -254,113 +278,152 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 32,
-    paddingTop: 80,
-    paddingBottom: 40,
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 24,
+    padding: 32,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 10,
+    marginTop: 40,
+    marginBottom: 40,
   },
   header: {
+    marginBottom: 24,
     alignItems: 'center',
-    marginBottom: 48,
   },
   logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 24,
+    width: 60,
+    height: 60,
+    marginBottom: 16,
+    borderRadius: 16,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '800',
-    letterSpacing: -1,
-    marginBottom: 8,
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1f2937',
+    marginBottom: 4,
   },
   subtitle: {
     fontSize: 16,
-    fontWeight: '400',
-    opacity: 0.7,
-    textAlign: 'center',
+    color: '#6b7280',
   },
-  form: {
-    gap: 20,
+  socialContainer: {
+    marginBottom: 24,
   },
-  label: {
-    fontSize: 11,
-    fontWeight: '700',
-    letterSpacing: 1.5,
-    marginBottom: 8,
-    marginLeft: 4,
-  },
-  inputWrapper: {
-    height: 56,
-    borderRadius: 16,
+  socialButton: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    gap: 12,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  registerButton: {
-    height: 60,
-    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    elevation: 4,
+    backgroundColor: '#f9fafb',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    padding: 14,
   },
-  buttonInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+  socialIconPlaceholder: {
+    marginRight: 8,
   },
-  registerButtonText: {
-    color: '#fff',
-    fontSize: 17,
-    fontWeight: '700',
+  socialG: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#ea4335',
+  },
+  socialButtonText: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#374151',
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 12,
+    marginBottom: 24,
   },
   line: {
     flex: 1,
     height: 1,
+    backgroundColor: '#e5e7eb',
   },
   dividerText: {
     marginHorizontal: 16,
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 1,
-    opacity: 0.4,
+    fontSize: 13,
+    color: '#6b7280',
+    backgroundColor: '#ffffff',
   },
-  socialRow: {
-    flexDirection: 'row',
+  form: {
     gap: 16,
   },
-  socialBtn: {
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: 6,
+  },
+  required: {
+    color: '#3b82f6',
+  },
+  inputWrapper: {
+    height: 48,
+    backgroundColor: '#f9fafb',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  inputWrapperFocused: {
+    borderColor: '#3b82f6',
+    backgroundColor: '#ffffff',
+  },
+  input: {
     flex: 1,
-    height: 56,
-    borderRadius: 16,
+    fontSize: 15,
+    color: '#1f2937',
+    height: '100%',
+  },
+  eyeIcon: {
+    padding: 4,
+  },
+  registerButtonContainer: {
+    marginTop: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  registerButtonGradient: {
+    height: 52,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  registerButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 40,
+    marginTop: 32,
   },
   footerText: {
-    fontSize: 15,
+    fontSize: 14,
+    color: '#6b7280',
   },
   signInText: {
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2563eb',
   },
 });
