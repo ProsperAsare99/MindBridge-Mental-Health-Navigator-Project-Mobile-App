@@ -1,15 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { 
+  FadeIn,
   FadeInDown, 
   FadeInUp, 
-  useAnimatedStyle, 
-  withRepeat, 
-  withSequence, 
-  withTiming,
-  withDelay
 } from 'react-native-reanimated';
 import { useTheme } from '../src/context/ThemeContext';
 import { ArrowRight } from 'lucide-react-native';
@@ -20,34 +15,18 @@ export default function LandingPage() {
   const { colors } = useTheme();
   const router = useRouter();
 
-  const floatingButtonStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        translateY: withRepeat(
-          withSequence(
-            withTiming(-10, { duration: 2000 }),
-            withTiming(0, { duration: 2000 })
-          ),
-          -1,
-          true
-        ),
-      },
-    ],
-  }));
-
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={[colors.primary, colors.accent, colors.background]}
-        style={StyleSheet.absoluteFill}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      />
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <StatusBar barStyle="dark-content" />
+      
+      <View style={styles.meshContainer}>
+        <View style={[styles.meshGradient, { backgroundColor: colors.secondary, opacity: 0.5 }]} />
+      </View>
 
       <View style={styles.content}>
         <Animated.View 
-          entering={FadeInUp.duration(1000).springify()}
-          style={[styles.logoContainer, floatingButtonStyle]}
+          entering={FadeIn.duration(1200)}
+          style={styles.logoWrapper}
         >
           <Image 
             source={require('../assets/logo.png')} 
@@ -58,37 +37,39 @@ export default function LandingPage() {
 
         <View style={styles.textContainer}>
           <Animated.Text 
-            entering={FadeInDown.delay(300).duration(800)}
+            entering={FadeInDown.delay(200).duration(1000).springify()}
             style={[styles.title, { color: colors.text }]}
           >
             MindBridge
           </Animated.Text>
           <Animated.Text 
-            entering={FadeInDown.delay(500).duration(800)}
-            style={[styles.tagline, { color: colors.textSecondary }]}
+            entering={FadeInDown.delay(400).duration(1000).springify()}
+            style={[styles.subtitle, { color: colors.textSecondary }]}
           >
-            Your journey to mental clarity and emotional balance starts here.
+            A high-fidelity space for mental clarity{"\n"}and emotional resonance.
           </Animated.Text>
         </View>
 
-        <View style={styles.buttonContainer}>
-          <Animated.View entering={FadeInDown.delay(700).springify()}>
+        <View style={styles.actionContainer}>
+          <Animated.View entering={FadeInUp.delay(600).duration(1000).springify()}>
             <TouchableOpacity 
+              activeOpacity={0.8}
               style={[styles.primaryButton, { backgroundColor: colors.primary }]}
               onPress={() => router.push('/(auth)/register')}
             >
-              <Text style={styles.primaryButtonText}>Get Started</Text>
-              <ArrowRight size={20} color="#fff" style={styles.btnIcon} />
+              <Text style={styles.primaryButtonText}>Begin Journey</Text>
+              <ArrowRight size={18} color="#fff" />
             </TouchableOpacity>
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.delay(900).springify()}>
+          <Animated.View entering={FadeInUp.delay(800).duration(1000).springify()}>
             <TouchableOpacity 
-              style={[styles.secondaryButton, { borderColor: colors.primary }]}
+              activeOpacity={0.7}
+              style={[styles.secondaryButton, { borderColor: colors.border }]}
               onPress={() => router.push('/(auth)/login')}
             >
-              <Text style={[styles.secondaryButtonText, { color: colors.primary }]}>
-                I already have an account
+              <Text style={[styles.secondaryButtonText, { color: colors.text }]}>
+                Continue to Dashboard
               </Text>
             </TouchableOpacity>
           </Animated.View>
@@ -96,11 +77,11 @@ export default function LandingPage() {
       </View>
 
       <Animated.View 
-        entering={FadeInDown.delay(1200)}
+        entering={FadeIn.delay(1200).duration(1000)}
         style={styles.footer}
       >
         <Text style={[styles.footerText, { color: colors.textSecondary }]}>
-          Designed for your peace of mind
+          EST. 2026 • PRECISE WELLNESS
         </Text>
       </Animated.View>
     </View>
@@ -111,85 +92,100 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  meshContainer: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  meshGradient: {
+    position: 'absolute',
+    top: -width * 0.5,
+    right: -width * 0.5,
+    width: width * 1.5,
+    height: width * 1.5,
+    borderRadius: width * 0.75,
+  },
   content: {
     flex: 1,
-    alignItems: 'center',
+    paddingHorizontal: 40,
     justifyContent: 'center',
-    padding: 32,
+    alignItems: 'center',
   },
-  logoContainer: {
-    width: 250,
-    height: 150,
-    marginBottom: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+  logoWrapper: {
+    marginBottom: 48,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    elevation: 4,
   },
   logo: {
-    width: '100%',
-    height: '100%',
+    width: 120,
+    height: 120,
   },
   textContainer: {
     alignItems: 'center',
-    marginBottom: 64,
+    marginBottom: 80,
   },
   title: {
-    fontSize: 48,
-    fontWeight: '900',
-    letterSpacing: -2,
-    marginBottom: 12,
+    fontSize: 44,
+    fontWeight: '800',
+    letterSpacing: -1.5,
+    textAlign: 'center',
+    marginBottom: 16,
   },
-  tagline: {
-    fontSize: 18,
+  subtitle: {
+    fontSize: 17,
     textAlign: 'center',
     lineHeight: 26,
-    paddingHorizontal: 20,
-    opacity: 0.9,
+    fontWeight: '400',
+    opacity: 0.8,
   },
-  buttonContainer: {
+  actionContainer: {
     width: '100%',
     gap: 16,
   },
   primaryButton: {
-    height: 64,
-    borderRadius: 20,
+    height: 60,
+    borderRadius: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
+    gap: 12,
+    shadowColor: '#0077b6',
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
-    shadowRadius: 15,
-    elevation: 8,
+    shadowRadius: 16,
+    elevation: 6,
   },
   primaryButtonText: {
     color: '#fff',
-    fontSize: 20,
-    fontWeight: '700',
-  },
-  btnIcon: {
-    marginLeft: 10,
+    fontSize: 17,
+    fontWeight: '600',
+    letterSpacing: 0.2,
   },
   secondaryButton: {
-    height: 64,
-    borderRadius: 20,
-    borderWidth: 2,
+    height: 60,
+    borderRadius: 18,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    backgroundColor: 'transparent',
   },
   secondaryButtonText: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '500',
+    letterSpacing: 0.2,
   },
   footer: {
     position: 'absolute',
-    bottom: 48,
+    bottom: 50,
     width: '100%',
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 14,
-    fontWeight: '500',
-    opacity: 0.6,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 2,
+    opacity: 0.5,
   },
 });

@@ -2,61 +2,56 @@ export const COLORS = {
   // Common Colors
   white: '#FFFFFF',
   black: '#000000',
-  gray: {
-    50: '#F9FAFB',
-    100: '#F3F4F6',
-    200: '#E5E7EB',
-    300: '#D1D5DB',
-    400: '#9CA3AF',
-    500: '#6B7280',
-    600: '#4B5563',
-    700: '#374151',
-    800: '#1F2937',
-    900: '#111827',
-  },
   
-  // Theme Variations
+  // Luxury Design System
   themes: {
-    stability: {
-      primary: '#4F46E5', // Indigo 600
-      secondary: '#E0E7FF', // Indigo 100
-      accent: '#818CF8', // Indigo 400
-      background: '#F5F7FF',
-      card: '#FFFFFF',
-      text: '#312E81',
-      textSecondary: '#6366F1', // Indigo 500
-      border: '#E0E7FF',
-      icon: 'Zen',
+    slate: { // Light Theme (Matte Slate)
+      primary: '#0077b6', // Ocean Blue
+      secondary: '#f1f5f9', // Slate 100
+      background: '#f8fafc', // Slate 50
+      card: '#ffffff',
+      text: '#020617', // Foreground
+      textSecondary: '#64748b', // Slate 500
+      border: '#94a3b8', // Slate 400
+      stroke: '#f1f5f9',
     },
-    calm: {
-      primary: '#0D9488', // Teal 600
-      secondary: '#CCFBF1', // Teal 100
-      accent: '#2DD4BF', // Teal 400
-      background: '#F0FDFA',
-      card: '#FFFFFF',
-      text: '#134E48',
-      textSecondary: '#14B8A6', // Teal 500
-      border: '#CCFBF1',
-      icon: 'Focus',
+    carbon: { // Dark Theme (Carbon & Blue)
+      primary: '#00b4d8', // Muted Blue
+      secondary: '#27272a',
+      background: '#0a0a0b', // Deeper Carbon
+      card: '#18181b', // Matte Carbon
+      text: '#d1d1c7', // Muted Parchment
+      textSecondary: '#a1a1aa',
+      border: 'rgba(0, 180, 216, 0.1)',
+      stroke: '#64748b',
     },
-    energy: {
-      primary: '#0284C7', // Sky 600
-      secondary: '#E0F2FE', // Sky 100
-      accent: '#38BDF8', // Sky 400
-      background: '#F0F9FF',
-      card: '#FFFFFF',
-      text: '#0C4A6E',
-      textSecondary: '#0EA5E9', // Sky 500
-      border: '#E0F2FE',
-      icon: 'Action',
+    luxury: { // Luxury Theme (Profile & Settings)
+      primary: '#d9c5b2', // Champagne Beige
+      secondary: '#fdfcf9', // Ivory
+      background: '#fdfcf9',
+      card: '#ffffff',
+      text: '#1c1c1c', // Obsidian
+      textSecondary: '#8d8d8d',
+      border: '#d9c5b2',
+      stroke: '#e2e8f0',
     },
+    'luxury-dark': { // Luxury Dark Variant
+      primary: '#f5f5f0', // Cream
+      secondary: '#262626',
+      background: '#1c1c1c', // Obsidian Black
+      card: '#262626',
+      text: '#f5f5f0',
+      textSecondary: '#a3a3a3',
+      border: '#404040',
+      stroke: '#404040',
+    }
   },
 
   // Functional Colors
-  error: '#EF4444',
-  success: '#10B981',
-  warning: '#F59E0B',
-  distress: '#BE123C', // Pulsing Rose/Crimson
+  error: '#ef4444',
+  success: '#10b981',
+  warning: '#f59e0b',
+  distress: '#be123c',
 };
 
 export const TYPOGRAPHY = {
