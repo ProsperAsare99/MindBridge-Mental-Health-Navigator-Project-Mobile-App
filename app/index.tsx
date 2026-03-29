@@ -146,9 +146,9 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   logoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     borderWidth: 1.5,
     borderColor: 'rgba(255,255,255,0.15)',
     backgroundColor: 'transparent',
@@ -157,8 +157,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 60,
-    height: 60,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
   },
   badge: {
     flexDirection: 'row',
