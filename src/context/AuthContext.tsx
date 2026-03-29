@@ -5,16 +5,37 @@ import apiClient from '../services/apiClient';
 interface User {
   id: string;
   email: string;
+  displayName?: string;
+  onboardingCompleted?: boolean;
+  onboardingStep?: number;
+  university?: string;
+  studentId?: string;
+  phoneNumber?: string;
+  program?: string;
+  isVerified?: boolean;
+}
+
+interface RegisterParams {
+  email: string;
+  password?: string;
   name: string;
+  phoneNumber: string;
+  institution: string;
+  studentId: string;
+  course: string;
+  academicLevel?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (token: string, user: User) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (params: RegisterParams) => Promise<void>;
   logout: () => Promise<void>;
+  updateOnboarding: (data: any) => Promise<void>;
   updateUser: (user: User) => void;
+  authenticate: (token: string, user: User) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,7 +56,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       if (storedToken && storedUser) {
         setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        
+        // Background verify token
+        verifyStoredToken(storedToken);
       }
     } catch (e) {
       console.error('Failed to load auth state:', e);
@@ -44,7 +69,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const login = async (newToken: string, newUser: User) => {
+  const verifyStoredToken = async (currentToken: string) => {
+    try {
+      const response = await apiClient.get('/auth/verify-token');
+      if (response.data.user) {
+        setUser(response.data.user);
+        await storage.setItemAsync('userData', JSON.stringify(response.data.user));
+      }
+    } catch (error) {
+      console.log('Stored token is invalid, logging out.');
+      logout();
+    }
+  };
+
+  const authenticate = async (newToken: string, newUser: User) => {
     try {
       await storage.setItemAsync('userToken', newToken);
       await storage.setItemAsync('userData', JSON.stringify(newUser));
@@ -53,6 +91,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (e) {
       console.error('Failed to save auth state:', e);
       throw e;
+    }
+  };
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      const response = await apiClient.post('/auth/login', { email, password });
+      const { token: newToken, user: newUser } = response.data;
+      await authenticate(newToken, newUser);
+    } catch (error: any) {
+      const message = error.response?.data?.error || 'Login failed';
+      throw new Error(message);
+    }
+  };
+
+  const signUp = async (params: RegisterParams) => {
+    try {
+      const response = await apiClient.post('/auth/register', params);
+      const { token: newToken, user: newUser } = response.data;
+      await authenticate(newToken, newUser);
+    } catch (error: any) {
+      const message = error.response?.data?.error || 'Registration failed';
+      throw new Error(message);
     }
   };
 
@@ -72,8 +132,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     storage.setItemAsync('userData', JSON.stringify(updatedUser));
   };
 
+  const updateOnboarding = async (data: any) => {
+    try {
+      const response = await apiClient.post('/onboarding/update', data);
+      if (response.data.user) {
+        setUser(response.data.user);
+      }
+    } catch (error: any) {
+      throw new Error(error.response?.data?.error || 'Failed to update onboarding progress');
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, token, isLoading, signIn, signUp, logout, updateOnboarding, updateUser, authenticate }}>
       {children}
     </AuthContext.Provider>
   );

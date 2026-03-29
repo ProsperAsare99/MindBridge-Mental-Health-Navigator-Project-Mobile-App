@@ -17,13 +17,13 @@ import { useRouter } from 'expo-router';
 import { useAuthContext } from '../../src/context/AuthContext';
 import { Eye, EyeOff, ArrowRight } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
-import Animated, { FadeInDown, FadeInUp, withSequence, withTiming, useSharedValue, useAnimatedStyle, Easing } from 'react-native-reanimated';
+import Animated, { FadeInUp, withTiming, useSharedValue, useAnimatedStyle, Easing } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 import AnimatedBackground from '../../src/components/AnimatedBackground';
 
 export default function Login() {
-  const { login } = useAuthContext();
+  const { signIn } = useAuthContext();
   const router = useRouter();
   
   const [email, setEmail] = useState('');
@@ -59,11 +59,11 @@ export default function Login() {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      await login('dummy-token', { id: '1', email, name: 'MindBridge User' });
+      await signIn(email, password);
+      // AuthContext handles the state, router will automatically redirect if protected
     } catch (error: any) {
       console.error(error);
-      Alert.alert('Login Failed', 'Could not establish a secure connection.');
+      Alert.alert('Login Failed', error.message || 'Could not establish a secure connection.');
     } finally {
       setIsLoading(false);
     }
@@ -81,150 +81,149 @@ export default function Login() {
         <ScrollView 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps="handled" 
         >
-          <Animated.View 
-            entering={FadeInUp.springify().damping(12).stiffness(90)}
-            style={styles.cardContainer}
-          >
-            <BlurView intensity={75} tint="light" style={styles.card}>
-              {/* Header */}
-              <View style={styles.header}>
-                <Animated.View entering={FadeInDown.springify().delay(100)}>
+          <View style={styles.cardContainer}>
+            <View style={styles.card}>
+              {/* Blur background moved inside the card and behind content for stability */}
+              <BlurView intensity={80} tint="light" style={StyleSheet.absoluteFillObject} />
+              
+              <View style={styles.cardInner}>
+                {/* Header */}
+                <View style={styles.header}>
                   <Image 
                     source={require('../../assets/logo.png')} 
                     style={styles.logo} 
                   />
-                </Animated.View>
-                <Animated.Text entering={FadeInDown.springify().delay(200)} style={styles.title}>
-                  Welcome back
-                </Animated.Text>
-                <Animated.Text entering={FadeInDown.springify().delay(300)} style={styles.subtitle}>
-                  Sign in to your account
-                </Animated.Text>
-              </View>
-
-              {/* Social Login */}
-              <Animated.View entering={FadeInDown.delay(400)} style={styles.socialContainer}>
-                <TouchableOpacity activeOpacity={0.7} style={styles.socialButton} onPress={() => console.log('Google login')}>
-                  <View style={styles.socialIconPlaceholder}>
-                    <Text style={styles.socialG}>G</Text>
-                  </View>
-                  <Text style={styles.socialButtonText}>Login with Google</Text>
-                </TouchableOpacity>
-              </Animated.View>
-
-              {/* Divider */}
-              <Animated.View entering={FadeInDown.delay(500)} style={styles.divider}>
-                <View style={styles.line} />
-                <Text style={styles.dividerText}>or</Text>
-                <View style={styles.line} />
-              </Animated.View>
-
-              {/* Form */}
-              <View style={styles.form}>
-                <Animated.View entering={FadeInDown.delay(600)}>
-                  <Text style={styles.label}>
-                    Email <Text style={styles.required}>*</Text>
+                  <Text style={styles.title}>
+                    Welcome back
                   </Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'email' && styles.inputWrapperFocused
-                  ]}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your email address"
-                      placeholderTextColor="#6b7280"
-                      value={email}
-                      onChangeText={setEmail}
-                      autoCapitalize="none"
-                      keyboardType="email-address"
-                      onFocus={() => {
-                        setFocusedField('email');
-                        Haptics.selectionAsync();
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                    />
-                  </View>
-                </Animated.View>
-
-                <Animated.View entering={FadeInDown.delay(700)}>
-                  <Text style={styles.label}>
-                    Password <Text style={styles.required}>*</Text>
+                  <Text style={styles.subtitle}>
+                    Sign in to your account
                   </Text>
-                  <View style={[
-                    styles.inputWrapper,
-                    focusedField === 'password' && styles.inputWrapperFocused
-                  ]}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your password"
-                      placeholderTextColor="#6b7280"
-                      value={password}
-                      onChangeText={setPassword}
-                      secureTextEntry={!isPasswordVisible}
-                      onFocus={() => {
-                        setFocusedField('password');
-                        Haptics.selectionAsync();
-                      }}
-                      onBlur={() => setFocusedField(null)}
-                    />
-                    <TouchableOpacity
-                      style={styles.eyeIcon}
-                      onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                </View>
+
+                {/* Social Login */}
+                <View style={styles.socialContainer}>
+                  <TouchableOpacity activeOpacity={0.7} style={styles.socialButton} onPress={() => console.log('Google login')}>
+                    <View style={styles.socialIconPlaceholder}>
+                      <Text style={styles.socialG}>G</Text>
+                    </View>
+                    <Text style={styles.socialButtonText}>Login with Google</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Divider */}
+                <View style={styles.divider}>
+                  <View style={styles.line} />
+                  <Text style={styles.dividerText}>or</Text>
+                  <View style={styles.line} />
+                </View>
+
+                {/* Form */}
+                <View style={styles.form}>
+                  
+                  <View>
+                    <Text style={styles.label}>
+                      Email <Text style={styles.required}>*</Text>
+                    </Text>
+                    <View style={[
+                      styles.inputWrapper,
+                      focusedField === 'email' && styles.inputWrapperFocused
+                    ]}>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your email address"
+                        placeholderTextColor="#6b7280"
+                        value={email}
+                        onChangeText={setEmail}
+                        autoCapitalize="none"
+                        keyboardType="email-address"
+                        onFocus={() => {
+                          setFocusedField('email');
+                        }}
+                        onBlur={() => setFocusedField(null)}
+                      />
+                    </View>
+                  </View>
+
+                  <View>
+                    <Text style={styles.label}>
+                      Password <Text style={styles.required}>*</Text>
+                    </Text>
+                    <View style={[
+                      styles.inputWrapper,
+                      focusedField === 'password' && styles.inputWrapperFocused
+                    ]}>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Enter your password"
+                        placeholderTextColor="#6b7280"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!isPasswordVisible}
+                        onFocus={() => {
+                          setFocusedField('password');
+                        }}
+                        onBlur={() => setFocusedField(null)}
+                      />
+                      <TouchableOpacity
+                        style={styles.eyeIcon}
+                        onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+                      >
+                        {isPasswordVisible ? (
+                          <EyeOff size={20} color="#6b7280" />
+                        ) : (
+                          <Eye size={20} color="#6b7280" />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  <Animated.View style={[styles.loginButtonContainer, animatedButtonProps]}>
+                    <TouchableOpacity 
+                      activeOpacity={0.9} 
+                      onPressIn={handlePressIn}
+                      onPressOut={handlePressOut}
+                      onPress={handleLogin} 
+                      disabled={isLoading}
+                      style={{flex: 1}}
                     >
-                      {isPasswordVisible ? (
-                        <EyeOff size={20} color="#6b7280" />
-                      ) : (
-                        <Eye size={20} color="#6b7280" />
-                      )}
+                      <LinearGradient
+                        colors={['#4f46e5', '#2563eb', '#3b82f6']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.loginButtonGradient}
+                      >
+                        {isLoading ? (
+                          <ActivityIndicator color="#fff" />
+                        ) : (
+                          <View style={styles.buttonInner}>
+                            <Text style={styles.loginButtonText}>Sign in</Text>
+                            <ArrowRight size={18} color="#fff" />
+                          </View>
+                        )}
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </Animated.View>
+
+                  <View style={styles.forgotPassword}>
+                    <TouchableOpacity>
+                      <Text style={styles.forgotText}>Forgot password?</Text>
                     </TouchableOpacity>
                   </View>
-                </Animated.View>
+                </View>
 
-                <Animated.View entering={FadeInDown.delay(800)} style={[styles.loginButtonContainer, animatedButtonProps]}>
-                  <TouchableOpacity 
-                    activeOpacity={0.9} 
-                    onPressIn={handlePressIn}
-                    onPressOut={handlePressOut}
-                    onPress={handleLogin} 
-                    disabled={isLoading}
-                    style={{flex: 1}}
-                  >
-                    <LinearGradient
-                      colors={['#4f46e5', '#2563eb', '#3b82f6']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.loginButtonGradient}
-                    >
-                      {isLoading ? (
-                        <ActivityIndicator color="#fff" />
-                      ) : (
-                        <View style={styles.buttonInner}>
-                          <Text style={styles.loginButtonText}>Sign in</Text>
-                          <ArrowRight size={18} color="#fff" />
-                        </View>
-                      )}
-                    </LinearGradient>
+                <View style={styles.footer}>
+                  <Text style={styles.footerText}>New to MindBridge? </Text>
+                  <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+                    <Text style={styles.signUpText}>Initialize Account</Text>
                   </TouchableOpacity>
-                </Animated.View>
-
-                <Animated.View entering={FadeInDown.delay(900)} style={styles.forgotPassword}>
-                  <TouchableOpacity>
-                    <Text style={styles.forgotText}>Forgot password?</Text>
-                  </TouchableOpacity>
-                </Animated.View>
+                </View>
               </View>
 
-              <Animated.View entering={FadeInDown.delay(1000)} style={styles.footer}>
-                <Text style={styles.footerText}>New to MindBridge? </Text>
-                <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-                  <Text style={styles.signUpText}>Initialize Account</Text>
-                </TouchableOpacity>
-              </Animated.View>
-
-            </BlurView>
-          </Animated.View>
+            </View>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
@@ -248,16 +247,19 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     overflow: 'hidden',
     shadowColor: '#4f46e5',
-    shadowOffset: { width: 0, height: 15 },
-    shadowOpacity: 0.15,
-    shadowRadius: 30,
-    elevation: 15,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 10,
   },
   card: {
-    padding: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.45)', // subtle white tint
+    backgroundColor: 'rgba(255, 255, 255, 0.45)', 
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.7)',
+    overflow: 'hidden',
+  },
+  cardInner: {
+    padding: 24,
   },
   header: {
     marginBottom: 16,
@@ -271,7 +273,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '800', // bolder
+    fontWeight: '800', 
     color: '#111827',
     marginBottom: 4,
     letterSpacing: -0.5,
@@ -333,13 +335,13 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   required: {
-    color: '#4f46e5', // Brand purple
+    color: '#4f46e5',
   },
   inputWrapper: {
     height: 46,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.8)',
+    borderColor: 'rgba(0, 0, 0, 0.05)',
     borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
@@ -348,18 +350,12 @@ const styles = StyleSheet.create({
   inputWrapperFocused: {
     borderColor: '#4f46e5',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    shadowColor: '#4f46e5',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 5,
   },
   input: {
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
     color: '#1f2937',
-    height: '100%',
   },
   eyeIcon: {
     padding: 4,
@@ -368,11 +364,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     borderRadius: 14,
     overflow: 'hidden',
-    shadowColor: '#4f46e5',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
   },
   loginButtonGradient: {
     height: 50,

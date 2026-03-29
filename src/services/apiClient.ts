@@ -3,7 +3,7 @@ import storage from '../utils/storage';
 
 // Uses Expo's built-in environment variables from the .env file
 // Fallback is 192.168.1.100 for emulators or testing if .env is not found
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.1.100:5000/api';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://10.107.2.11:5000/api';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,

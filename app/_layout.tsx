@@ -8,7 +8,7 @@ import { View, ActivityIndicator } from 'react-native';
 const queryClient = new QueryClient();
 
 function RootLayoutNav() {
-  const { token, isLoading } = useAuthContext();
+  const { token, user, isLoading } = useAuthContext();
   const segments = useSegments();
   const router = useRouter();
 
@@ -17,15 +17,23 @@ function RootLayoutNav() {
 
     const inAuthGroup = segments[0] === '(auth)';
     const onLandingPage = !segments[0] || segments[0] === 'index';
+    const isOnboarding = segments[ segments.length - 1 ] === 'onboarding';
 
     if (!token && !inAuthGroup && !onLandingPage) {
       // Redirect to landing if not authenticated and not in auth group/landing
       router.replace('/');
-    } else if (token && (inAuthGroup || onLandingPage)) {
-      // Redirect to dashboard if authenticated but trying to access auth/landing
-      router.replace('/(tabs)/dashboard');
+    } else if (token) {
+      const isComplete = user?.onboardingCompleted === true;
+      
+      if (!isComplete && !isOnboarding) {
+        // Redirect to onboarding if authenticated but onboarding is not complete
+        router.replace('/(auth)/onboarding');
+      } else if (isComplete && (inAuthGroup || onLandingPage || isOnboarding)) {
+        // Redirect to dashboard if authenticated and onboarding complete
+        router.replace('/(tabs)/dashboard');
+      }
     }
-  }, [token, isLoading, segments]);
+  }, [token, user, isLoading, segments]);
 
   if (isLoading) {
     return (
