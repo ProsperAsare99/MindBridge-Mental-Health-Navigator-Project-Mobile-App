@@ -1,154 +1,119 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, StatusBar, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, { 
-  FadeIn,
-  FadeInDown, 
+import MaskedView from '@react-native-masked-view/masked-view';
+import Animated, {
+  FadeInDown,
   FadeInUp,
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
   Easing,
-  interpolate,
 } from 'react-native-reanimated';
-import { useTheme } from '../src/context/ThemeContext';
-import { ArrowRight } from 'lucide-react-native';
+import { Circle, ArrowRight } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+import GeometricBackground from '../src/components/GeometricBackground';
 
 const { width, height } = Dimensions.get('window');
 
 export default function LandingPage() {
-  const { colors } = useTheme();
   const router = useRouter();
 
-  // Nebula Resonance System
-  const coreSwell = useSharedValue(0);
-  const accentDrift = useSharedValue(0);
-  const ambientFade = useSharedValue(0);
-
   useEffect(() => {
-    // Phase 1: Core Breathing (Slow Pulse)
-    coreSwell.value = withRepeat(
-      withTiming(1, { duration: 5000, easing: Easing.inOut(Easing.sin) }),
-      -1,
-      true
-    );
-
-    // Phase 2: Accent Drifting (Longer Sweep)
-    accentDrift.value = withRepeat(
-      withTiming(1, { duration: 7000, easing: Easing.inOut(Easing.quad) }),
-      -1,
-      true
-    );
-
-    // Phase 3: Ambient Glow (Short Flicker)
-    ambientFade.value = withRepeat(
-      withTiming(1, { duration: 3000, easing: Easing.inOut(Easing.exp) }),
-      -1,
-      true
-    );
-
-    const timer = setTimeout(() => {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }, 800);
-    
-    return () => clearTimeout(timer);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }, []);
 
-  const coreStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: interpolate(coreSwell.value, [0, 1], [1, 1.25]) },
-      { rotate: `${interpolate(coreSwell.value, [0, 1], [0, 15])}deg` }
-    ],
-    opacity: interpolate(coreSwell.value, [0, 1], [0.3, 0.5]),
-  }));
-
-  const accentStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: interpolate(accentDrift.value, [0, 1], [-width * 0.2, width * 0.2]) },
-      { translateY: interpolate(accentDrift.value, [0, 1], [0, -width * 0.1]) },
-      { scale: interpolate(accentDrift.value, [0, 1], [0.8, 1.1]) }
-    ],
-    opacity: interpolate(accentDrift.value, [0, 1], [0.2, 0.4]),
-  }));
-
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle="dark-content" />
-      
-      {/* Resonance Nebula System */}
-      <View style={styles.nebulaContainer}>
-        {/* Core Mesh: Grounding Color */}
-        <Animated.View style={[styles.meshOrb, { backgroundColor: colors.secondary, width: width * 2, height: width * 2, top: -width * 0.5, right: -width * 0.5 }, coreStyle]} />
-        
-        {/* Accent Mesh: Dynamic Energy */}
-        <Animated.View style={[styles.meshOrb, { backgroundColor: colors.primary, width: width * 1.5, height: width * 1.5, bottom: -width * 0.3, left: -width * 0.3 }, accentStyle]} />
-        
-        {/* Light-Scrubbed Overlay: Text Visibility Security */}
-        <LinearGradient
-          colors={['transparent', colors.background]}
-          style={StyleSheet.absoluteFillObject}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 0.8 }}
-        />
-        <View style={[styles.visibilityOverlay, { backgroundColor: colors.background, opacity: 0.4 }]} />
-      </View>
+    <GeometricBackground>
+      <StatusBar barStyle="light-content" />
 
       <View style={styles.content}>
-        <Animated.View 
-          entering={FadeIn.duration(1200).springify().damping(15)}
+        {/* Circular Logo */}
+        <Animated.View
+          entering={FadeInDown.delay(300).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}
           style={styles.logoWrapper}
         >
-          <View style={[styles.logoContainer, { borderColor: colors.border + '33' }]}>
-            <Image 
-              source={require('../assets/logo.png')} 
-              style={styles.logo} 
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/logo.png')}
+              style={styles.logo}
               resizeMode="contain"
             />
           </View>
         </Animated.View>
 
+        {/* Badge */}
+        <Animated.View
+          entering={FadeInDown.delay(500).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}
+          style={styles.badge}
+        >
+          <Circle size={8} color="#0077b6" fill="#0077b6" />
+          <Text style={styles.badgeText}>Est 2026 • MindBridge</Text>
+        </Animated.View>
+
         <View style={styles.textContainer}>
-          <Animated.View entering={FadeInDown.delay(200).duration(1000).springify().damping(12).mass(0.8)}>
-            <Text style={[styles.title, { color: colors.text }]}>
-              MindBridge
-            </Text>
+          <Animated.View entering={FadeInDown.delay(700).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
+            <Text style={styles.title1}>Elevate Your</Text>
+            <Text style={styles.title1}>Mental Clarity</Text>
           </Animated.View>
-          
-          <Animated.View entering={FadeInDown.delay(400).duration(1000).springify().damping(12).mass(1)}>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-              A high-fidelity space for mental clarity{"\n"}and emotional resonance.
+
+          <Animated.View entering={FadeInDown.delay(900).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))} style={styles.title2Container}>
+            <MaskedView
+              style={{ width: width - 64, height: 60 }}
+              maskElement={<Text style={styles.title2}>Emotional</Text>}
+            >
+              <LinearGradient
+                colors={['#a5b4fc', '#ffffff', '#fda4af']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={StyleSheet.absoluteFillObject}
+              />
+            </MaskedView>
+            <MaskedView
+              style={{ width: width - 64, height: 60 }}
+              maskElement={<Text style={styles.title2}>Resonance</Text>}
+            >
+              <LinearGradient
+                colors={['#a5b4fc', '#ffffff', '#fda4af']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={StyleSheet.absoluteFillObject}
+              />
+            </MaskedView>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(1100).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
+            <Text style={styles.description}>
+              A high-fidelity space for mental clarity{"\n"}
+              and profound emotional resonance.
             </Text>
           </Animated.View>
         </View>
 
+        {/* Start Button */}
         <View style={styles.actionContainer}>
-          <Animated.View entering={FadeInUp.delay(600).duration(1000).springify()}>
-            <TouchableOpacity 
+          <Animated.View entering={FadeInDown.delay(1300).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
+            <TouchableOpacity
               activeOpacity={0.8}
-              style={[styles.primaryButton, { backgroundColor: colors.primary }]}
+              style={styles.primaryButton}
               onPress={() => {
                 Haptics.selectionAsync();
                 router.push('/(auth)/register');
               }}
             >
               <Text style={styles.primaryButtonText}>Begin Journey</Text>
-              <ArrowRight size={18} color="#fff" />
+              <ArrowRight size={18} color="#030303" />
             </TouchableOpacity>
           </Animated.View>
 
-          <Animated.View entering={FadeInUp.delay(800).duration(1000).springify()}>
-            <TouchableOpacity 
+          <Animated.View entering={FadeInUp.delay(1400).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1)).springify()}>
+            <TouchableOpacity
               activeOpacity={0.7}
-              style={[styles.secondaryButton, { borderColor: colors.border }]}
+              style={[styles.secondaryButton, { marginTop: 16 }]}
               onPress={() => {
                 Haptics.selectionAsync();
                 router.push('/(auth)/login');
               }}
             >
-              <Text style={[styles.secondaryButtonText, { color: colors.text }]}>
+              <Text style={styles.secondaryButtonText}>
                 Continue to Dashboard
               </Text>
             </TouchableOpacity>
@@ -156,129 +121,132 @@ export default function LandingPage() {
         </View>
       </View>
 
-      <Animated.View 
-        entering={FadeIn.delay(1200).duration(1000)}
-        style={styles.footer}
-      >
-        <Text style={[styles.footerText, { color: colors.textSecondary }]}>
-          EST. 2026 • PRECISE WELLNESS
-        </Text>
-      </Animated.View>
-    </View>
+      {/* Surface Gradient Blur */}
+      <LinearGradient
+        colors={['transparent', '#030303']}
+        style={styles.bottomScrub}
+      />
+    </GeometricBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  nebulaContainer: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
-  },
-  meshOrb: {
-    position: 'absolute',
-    borderRadius: 2000,
-  },
-  visibilityOverlay: {
-    ...StyleSheet.absoluteFillObject,
-  },
   content: {
     flex: 1,
-    paddingHorizontal: 40,
+    paddingHorizontal: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1,
   },
   logoWrapper: {
-    marginBottom: 48,
+    marginBottom: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.12,
-    shadowRadius: 30,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
     elevation: 10,
   },
   logoContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     borderWidth: 1.5,
-    backgroundColor: '#fff',
+    borderColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'transparent',
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 60,
+    height: 60,
+  },
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    backgroundColor: 'rgba(255,255,255,0.03)',
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    marginBottom: 40,
+  },
+  badgeText: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 13,
+    fontWeight: '500',
+    letterSpacing: 1,
   },
   textContainer: {
     alignItems: 'center',
-    marginBottom: 80,
+    marginBottom: 60,
   },
-  title: {
-    fontSize: 52,
+  title1: {
+    fontSize: 42,
     fontWeight: '800',
-    letterSpacing: -2.5,
+    color: '#fff',
+    letterSpacing: -1.5,
     textAlign: 'center',
-    marginBottom: 16,
-    textShadowColor: 'rgba(0,0,0,0.05)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    lineHeight: 48,
   },
-  subtitle: {
-    fontSize: 19,
+  title2Container: {
+    marginTop: 4,
+    alignItems: 'center',
+  },
+  title2: {
+    fontSize: 42,
+    fontWeight: '800',
+    letterSpacing: -1.5,
     textAlign: 'center',
-    lineHeight: 28,
-    fontWeight: '400',
-    opacity: 0.85,
+    lineHeight: 48,
+    color: '#000',
+  },
+  description: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.4)',
+    textAlign: 'center',
+    marginTop: 24,
+    lineHeight: 24,
+    fontWeight: '300',
   },
   actionContainer: {
     width: '100%',
-    gap: 16,
   },
   primaryButton: {
-    height: 68,
-    borderRadius: 22,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-    shadowColor: '#0077b6',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 8,
   },
   primaryButtonText: {
-    color: '#fff',
-    fontSize: 19,
+    color: '#030303',
+    fontSize: 17,
     fontWeight: '700',
-    letterSpacing: 0.2,
   },
   secondaryButton: {
-    height: 68,
-    borderRadius: 22,
+    height: 64,
+    borderRadius: 20,
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
+    borderColor: 'rgba(255,255,255,0.15)',
   },
   secondaryButtonText: {
     fontSize: 17,
     fontWeight: '600',
     letterSpacing: 0.2,
+    color: '#fff',
   },
-  footer: {
+  bottomScrub: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 0,
     width: '100%',
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 3,
-    opacity: 0.4,
+    height: height * 0.3,
+    pointerEvents: 'none',
   },
 });
