@@ -40,57 +40,65 @@ export default function LandingPage() {
           </View>
         </Animated.View>
 
-        {/* Badge */}
+        {/* Mission Badge */}
         <Animated.View
           entering={FadeInDown.delay(500).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}
-          style={styles.badge}
+          style={styles.missionTag}
         >
-          <Circle size={8} color="#0077b6" fill="#0077b6" />
-          <Text style={styles.badgeText}>Est 2026 • MindBridge</Text>
+          <Circle size={4} color="#FCD116" fill="#FCD116" />
+          <Text style={styles.missionTagText}>The Mission</Text>
         </Animated.View>
 
-        <View style={styles.textContainer}>
+        <View style={styles.heroContainer}>
           <Animated.View entering={FadeInDown.delay(700).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
-            <Text style={styles.subtitle}>The Mission</Text>
-            <Text style={styles.title1}>Empowering Minds</Text>
-            <Text style={styles.title1}>across</Text>
+            <Text style={styles.mainHeading}>Empowering Minds</Text>
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.delay(900).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))} style={styles.title2Container}>
+          <Animated.View entering={FadeInDown.delay(800).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
+            <Text style={styles.acrossText}>across</Text>
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(900).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))} style={styles.impactContainer}>
             <MaskedView
               style={{ width: width - 64, height: 60 }}
-              maskElement={<Text style={styles.title2}>Ghanaian</Text>}
+              maskElement={<Text style={styles.ghanaianTitle}>Ghanaian</Text>}
             >
               <LinearGradient
-                colors={['#CE1126', '#FCD116', '#006B3F']}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
+                colors={['#CE1126', '#FCD116', '#030303', '#FCD116', '#006B3F']}
+                locations={[0, 0.35, 0.5, 0.65, 1]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
                 style={StyleSheet.absoluteFillObject}
               />
             </MaskedView>
-            <Text style={styles.title1}>Institutions</Text>
+            <Animated.View 
+              entering={FadeInDown.delay(1000).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}
+              style={{ marginTop: -4 }}
+            >
+              <Text style={styles.mainHeading}>Institutions</Text>
+            </Animated.View>
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.delay(1100).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
-            <Text style={styles.description}>
+          <Animated.View entering={FadeInDown.delay(1150).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
+            <Text style={styles.descriptionText}>
               A high-fidelity space for mental health wellness{"\n"}
-              and profound emotional resilience.
+              and profound emotional resilience across Ghana.
             </Text>
           </Animated.View>
         </View>
 
-        {/* Start Button */}
-        <View style={styles.actionContainer}>
+        {/* Action Section */}
+        <View style={styles.footer}>
           <Animated.View entering={FadeInDown.delay(1300).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
             <TouchableOpacity
               activeOpacity={0.8}
-              style={styles.primaryButton}
+              style={styles.ctaButton}
               onPress={() => {
                 Haptics.selectionAsync();
                 router.push('/(auth)/register');
               }}
             >
-              <Text style={styles.primaryButtonText}>Begin Journey</Text>
+              <Text style={styles.ctaButtonText}>Begin Journey</Text>
               <ArrowRight size={18} color="#030303" />
             </TouchableOpacity>
           </Animated.View>
@@ -98,13 +106,13 @@ export default function LandingPage() {
           <Animated.View entering={FadeInUp.delay(1400).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1)).springify()}>
             <TouchableOpacity
               activeOpacity={0.7}
-              style={[styles.secondaryButton, { marginTop: 16 }]}
+              style={styles.ghostButton}
               onPress={() => {
                 Haptics.selectionAsync();
                 router.push('/(auth)/login');
               }}
             >
-              <Text style={styles.secondaryButtonText}>
+              <Text style={styles.ghostButtonText}>
                 Continue to Dashboard
               </Text>
             </TouchableOpacity>
@@ -137,116 +145,123 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   logoContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     borderWidth: 1.5,
     borderColor: 'rgba(255,255,255,0.15)',
-    backgroundColor: 'transparent',
-    overflow: 'hidden',
+    backgroundColor: 'rgba(255,255,255,0.03)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
-  badge: {
+  missionTag: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     paddingHorizontal: 16,
     paddingVertical: 6,
-    backgroundColor: 'rgba(255,255,255,0.03)',
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    marginBottom: 40,
+    borderColor: 'rgba(255,255,255,0.1)',
+    marginBottom: 20,
   },
-  badgeText: {
-    color: 'rgba(255,255,255,0.6)',
-    fontSize: 13,
-    fontWeight: '500',
-    letterSpacing: 1,
+  missionTagText: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
   },
-  textContainer: {
+  heroContainer: {
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 24,
   },
-  title1: {
-    fontSize: 40,
-    fontWeight: '800',
+  mainHeading: {
+    fontSize: 38,
+    fontWeight: '900',
     color: '#fff',
     letterSpacing: -1.5,
     textAlign: 'center',
-    lineHeight: 46,
+    lineHeight: 44,
   },
-  subtitle: {
-    fontSize: 16,
+  acrossText: {
+    fontSize: 13,
+    color: '#FCD116',
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.6)',
-    letterSpacing: 2,
-    marginBottom: 8,
+    letterSpacing: 4,
     textTransform: 'uppercase',
+    marginVertical: 8,
+    opacity: 0.8,
   },
-  title2Container: {
-    marginTop: 4,
+  impactContainer: {
     alignItems: 'center',
   },
-  title2: {
-    fontSize: 42,
-    fontWeight: '800',
+  ghanaianTitle: {
+    fontSize: 38,
+    fontWeight: '900',
     letterSpacing: -1.5,
     textAlign: 'center',
-    lineHeight: 48,
-    color: '#000',
+    lineHeight: 44,
+    color: 'white',
   },
-  description: {
-    fontSize: 16,
+  descriptionText: {
+    fontSize: 15,
     color: 'rgba(255,255,255,0.4)',
     textAlign: 'center',
-    marginTop: 24,
-    lineHeight: 24,
+    marginTop: 12,
+    lineHeight: 22,
     fontWeight: '300',
+    maxWidth: width * 0.8,
   },
-  actionContainer: {
+  footer: {
     width: '100%',
+    paddingBottom: 40,
   },
-  primaryButton: {
-    height: 64,
-    borderRadius: 20,
+  ctaButton: {
+    height: 60,
+    borderRadius: 18,
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  primaryButtonText: {
+  ctaButtonText: {
     color: '#030303',
     fontSize: 17,
     fontWeight: '700',
   },
-  secondaryButton: {
-    height: 64,
-    borderRadius: 20,
+  ghostButton: {
+    height: 60,
+    borderRadius: 18,
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
-    borderColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: 'rgba(255,255,255,0.02)',
+    borderColor: 'rgba(255,255,255,0.1)',
+    marginTop: 16,
   },
-  secondaryButtonText: {
-    fontSize: 17,
+  ghostButtonText: {
+    fontSize: 16,
     fontWeight: '600',
-    letterSpacing: 0.2,
-    color: '#fff',
+    color: 'rgba(255,255,255,0.8)',
   },
   bottomScrub: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
-    height: height * 0.3,
+    height: height * 0.25,
     pointerEvents: 'none',
   },
 });
