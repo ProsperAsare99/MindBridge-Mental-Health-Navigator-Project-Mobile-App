@@ -117,8 +117,11 @@ export default function Register() {
         course: courseOfStudy,
         academicLevel: studentLevel
       });
-      
-      router.replace('/(tabs)/dashboard');
+      Alert.alert(
+        'Account Created',
+        'Welcome to MindBridge! Your account has been successfully initialized.',
+        [{ text: 'Continue', onPress: () => router.replace('/(tabs)/dashboard') }]
+      );
     } catch (error: any) {
       console.error(error);
       Alert.alert('Registration Failed', error.message || 'Could not create your MindBridge account.');
@@ -190,7 +193,7 @@ export default function Register() {
                     ]}>
                       <TextInput
                         style={styles.input}
-                        placeholder="John Doe"
+                        placeholder="Prosper Asare"
                         placeholderTextColor="#6b7280"
                         value={name}
                         onChangeText={setName}

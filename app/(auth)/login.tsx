@@ -60,7 +60,11 @@ export default function Login() {
 
     try {
       await signIn(email, password);
-      // No manual redirect here; _layout.tsx will handle it based on onboarding status
+      Alert.alert(
+        'Login Successful',
+        'Welcome back! You have successfully signed in to your account.',
+        [{ text: 'Continue' }]
+      );
     } catch (error: any) {
       console.error(error);
       Alert.alert('Login Failed', error.message || 'Could not establish a secure connection.');

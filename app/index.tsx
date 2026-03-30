@@ -51,39 +51,30 @@ export default function LandingPage() {
 
         <View style={styles.textContainer}>
           <Animated.View entering={FadeInDown.delay(700).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
-            <Text style={styles.title1}>Elevate Your</Text>
-            <Text style={styles.title1}>Mental Clarity</Text>
+            <Text style={styles.subtitle}>The Mission</Text>
+            <Text style={styles.title1}>Empowering Minds</Text>
+            <Text style={styles.title1}>across</Text>
           </Animated.View>
 
           <Animated.View entering={FadeInDown.delay(900).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))} style={styles.title2Container}>
             <MaskedView
               style={{ width: width - 64, height: 60 }}
-              maskElement={<Text style={styles.title2}>Emotional</Text>}
+              maskElement={<Text style={styles.title2}>Ghanaian</Text>}
             >
               <LinearGradient
-                colors={['#a5b4fc', '#ffffff', '#fda4af']}
+                colors={['#CE1126', '#FCD116', '#006B3F']}
                 start={{ x: 0, y: 0.5 }}
                 end={{ x: 1, y: 0.5 }}
                 style={StyleSheet.absoluteFillObject}
               />
             </MaskedView>
-            <MaskedView
-              style={{ width: width - 64, height: 60 }}
-              maskElement={<Text style={styles.title2}>Resonance</Text>}
-            >
-              <LinearGradient
-                colors={['#a5b4fc', '#ffffff', '#fda4af']}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
-                style={StyleSheet.absoluteFillObject}
-              />
-            </MaskedView>
+            <Text style={styles.title1}>Institutions</Text>
           </Animated.View>
 
           <Animated.View entering={FadeInDown.delay(1100).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))}>
             <Text style={styles.description}>
-              A high-fidelity space for mental clarity{"\n"}
-              and profound emotional resonance.
+              A high-fidelity space for mental health wellness{"\n"}
+              and profound emotional resilience.
             </Text>
           </Animated.View>
         </View>
@@ -184,12 +175,20 @@ const styles = StyleSheet.create({
     marginBottom: 60,
   },
   title1: {
-    fontSize: 42,
+    fontSize: 40,
     fontWeight: '800',
     color: '#fff',
     letterSpacing: -1.5,
     textAlign: 'center',
-    lineHeight: 48,
+    lineHeight: 46,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.6)',
+    letterSpacing: 2,
+    marginBottom: 8,
+    textTransform: 'uppercase',
   },
   title2Container: {
     marginTop: 4,

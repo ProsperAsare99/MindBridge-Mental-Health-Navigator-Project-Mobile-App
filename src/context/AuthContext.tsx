@@ -101,7 +101,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { token: newToken, user: newUser } = response.data;
       await authenticate(newToken, newUser);
     } catch (error: any) {
-      const message = error.response?.data?.error || 'Login failed';
+      console.error('[AuthContext] Sign in error:', error);
+      let message = 'Login failed';
+      if (error.response) {
+        // The server responded with a status code that falls out of the range of 2xx
+        message = error.response.data?.error || message;
+      } else if (error.request) {
+        // The request was made but no response was received (e.g., network error/timeout)
+        message = 'Could not reach the server. Please check your internet connection or the server status.';
+      }
       throw new Error(message);
     }
   };
@@ -112,7 +120,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { token: newToken, user: newUser } = response.data;
       await authenticate(newToken, newUser);
     } catch (error: any) {
-      const message = error.response?.data?.error || 'Registration failed';
+      console.error('[AuthContext] Registration error:', error);
+      let message = 'Registration failed';
+      if (error.response) {
+        // The server responded with a status code that falls out of the range of 2xx
+        message = error.response.data?.error || message;
+      } else if (error.request) {
+        // The request was made but no response was received (e.g., network error/timeout)
+        message = 'Could not reach the server. Please check your internet connection or the server status.';
+      }
       throw new Error(message);
     }
   };
