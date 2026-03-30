@@ -61,7 +61,7 @@ export default function Register() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [institution, setInstitution] = useState('');
   const [otherInstitution, setOtherInstitution] = useState('');
-  const [studentId, setStudentId] = useState('');
+
   const [studentLevel, setStudentLevel] = useState('');
   const [courseOfStudy, setCourseOfStudy] = useState('');
   const [email, setEmail] = useState('');
@@ -93,7 +93,7 @@ export default function Register() {
   const handleRegister = async () => {
     const finalInstitution = institution === 'Other' ? otherInstitution : institution;
 
-    if (!name || !phoneNumber || !finalInstitution || !studentId || !studentLevel || !courseOfStudy || !email || !password || !confirmPassword) {
+    if (!name || !phoneNumber || !finalInstitution || !studentLevel || !courseOfStudy || !email || !password || !confirmPassword) {
       Alert.alert('Incomplete Form', 'Please fill in all required fields.');
       return;
     }
@@ -113,7 +113,6 @@ export default function Register() {
         password,
         phoneNumber,
         institution: finalInstitution,
-        studentId,
         course: courseOfStudy,
         academicLevel: studentLevel
       });
@@ -270,27 +269,7 @@ export default function Register() {
                     </View>
                   )}
 
-                  <View>
-                    <Text style={styles.label}>
-                      Student ID <Text style={styles.required}>*</Text>
-                    </Text>
-                    <View style={[
-                      styles.inputWrapper,
-                      focusedField === 'studentId' && styles.inputWrapperFocused
-                    ]}>
-                      <TextInput
-                        style={styles.input}
-                        placeholder="Enter your student ID"
-                        placeholderTextColor="#6b7280"
-                        value={studentId}
-                        onChangeText={setStudentId}
-                        onFocus={() => {
-                          setFocusedField('studentId');
-                        }}
-                        onBlur={() => setFocusedField(null)}
-                      />
-                    </View>
-                  </View>
+
 
                   <View>
                     <CustomSelect

@@ -22,7 +22,7 @@ interface RegisterParams {
   name: string;
   phoneNumber: string;
   institution: string;
-  studentId: string;
+  studentId?: string;
   course: string;
   academicLevel?: string;
 }

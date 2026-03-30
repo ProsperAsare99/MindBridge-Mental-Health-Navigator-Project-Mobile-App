@@ -111,12 +111,12 @@ export default function Onboarding() {
     preferredCheckInTime: 'morning',
     baseline: { mood: 3 },
     concerns: [],
-    supportLevel: 3,
+    supportLevel: 'somewhat',
     emergencyContactName: '',
     emergencyContactPhone: '',
     copingStyles: [],
     stressors: { academic: 5, social: 5, financial: 5 },
-    faithLevel: 3,
+    faithLevel: 'somewhat_important',
     approachPreference: 'holistic',
     goals: [],
     trackingPreferences: { mood: true, sleep: true, academic: true },
@@ -268,9 +268,13 @@ export default function Onboarding() {
       case 5: // Support Level
         return (
           <View style={styles.stepContainer}>
-            <Text style={styles.label}>Current Support Level (1-5)</Text>
+            <Text style={styles.label}>Current Support Level</Text>
             <OnboardingScale 
-              options={[1, 2, 3, 4, 5].map(v => ({ label: v.toString(), value: v }))}
+              options={[
+                { label: "Alone", value: "alone", emoji: "😟" },
+                { label: "Somewhat", value: "somewhat", emoji: "😐" },
+                { label: "Strong", value: "strong", emoji: "😊" }
+              ]}
               selectedValue={formData.supportLevel}
               onSelect={(val) => setFormData({...formData, supportLevel: val})}
               activeColor="#f472b6"
@@ -330,6 +334,18 @@ export default function Onboarding() {
       case 9: // Values
         return (
           <View style={styles.stepContainer}>
+            <Text style={styles.label}>Significance of Faith / Spirituality?</Text>
+            <OnboardingScale 
+              options={[
+                { label: "Not Important", value: "not_important", emoji: "😐" },
+                { label: "Somewhat", value: "somewhat_important", emoji: "🙏" },
+                { label: "Very Important", value: "very_important", emoji: "✨" }
+              ]}
+              selectedValue={formData.faithLevel}
+              onSelect={(val) => setFormData({...formData, faithLevel: val})}
+              activeColor="#fb923c"
+            />
+            <View style={{marginTop: 30}} />
             <Text style={styles.label}>Preferred Approach</Text>
             {['holistic', 'clinical', 'faith-based'].map(approach => (
               <OnboardingOption 

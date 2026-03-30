@@ -17,9 +17,9 @@ import Animated, {
 const { width } = Dimensions.get('window');
 
 interface OnboardingScaleProps {
-  options: { label: string; value: number; emoji?: string }[];
-  selectedValue: number;
-  onSelect: (value: number) => void;
+  options: { label: string; value: number | string; emoji?: string }[];
+  selectedValue: number | string;
+  onSelect: (value: number | string) => void;
   activeColor?: string;
 }
 
