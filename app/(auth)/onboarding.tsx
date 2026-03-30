@@ -45,17 +45,17 @@ import OnboardingScale from '../../src/components/onboarding/OnboardingScale';
 const { width, height } = Dimensions.get('window');
 
 const ONBOARDING_STEPS = [
-  { id: 1, title: "Identity", subtitle: "Help us personalize your experience", icon: UserIcon, color: "#fbbf24" },
-  { id: 2, title: "Academic Context", subtitle: "Tell us about your studies", icon: BookOpen, color: "#34d399" },
-  { id: 3, title: "Communication", subtitle: "How should we reach you?", icon: MessageSquare, color: "#60a5fa" },
-  { id: 4, title: "Current State", subtitle: "Set your wellbeing baseline", icon: Activity, color: "#f87171" },
-  { id: 5, title: "Support Level", subtitle: "What's your current support circle?", icon: Heart, color: "#f472b6" },
-  { id: 6, title: "Safety & Risks", subtitle: "Set up your emergency contact", icon: ShieldAlert, color: "#fb7185" },
-  { id: 7, title: "Coping Styles", subtitle: "What helps you through tough times?", icon: Anchor, color: "#818cf8" },
-  { id: 8, title: "Stress Factors", subtitle: "What causes you the most stress?", icon: Sparkles, color: "#a78bfa" },
-  { id: 9, title: "Values & Faith", subtitle: "What drives and inspires you?", icon: Target, color: "#fb923c" },
-  { id: 10, title: "Wellness Goals", subtitle: "What do you want to achieve?", icon: Target, color: "#2dd4bf" },
-  { id: 11, title: "Tracking Preferences", subtitle: "Your data collection choices", icon: Activity, color: "#38bdf8" },
+  { id: 1, title: "Identity", subtitle: "Help us personalize your experience", icon: UserIcon, color: "#996515" },
+  { id: 2, title: "Academic Context", subtitle: "Tell us about your studies", icon: BookOpen, color: "#6B7A68" },
+  { id: 3, title: "Communication", subtitle: "How should we reach you?", icon: MessageSquare, color: "#7B8EA8" },
+  { id: 4, title: "Current State", subtitle: "Set your wellbeing baseline", icon: Activity, color: "#A87B7B" },
+  { id: 5, title: "Support Level", subtitle: "What's your support circle?", icon: Heart, color: "#A87B95" },
+  { id: 6, title: "Safety & Risks", subtitle: "Emergency contact setup", icon: ShieldAlert, color: "#996515" },
+  { id: 7, title: "Coping Styles", subtitle: "What helps you through tough times?", icon: Anchor, color: "#7B81A8" },
+  { id: 8, title: "Stress Factors", subtitle: "Personal stress indicators", icon: Sparkles, color: "#8E7BA8" },
+  { id: 9, title: "Values & Faith", subtitle: "What drives and inspires you?", icon: Target, color: "#A88E7B" },
+  { id: 10, title: "Wellness Goals", subtitle: "Your primary health objectives", icon: Target, color: "#6B7A68" },
+  { id: 11, title: "Tracking Preference", subtitle: "Your data collection choices", icon: Activity, color: "#7B8EA8" },
   { id: 12, title: "Privacy & Consent", subtitle: "Final steps to proceed", icon: Lock, color: "#475569" }
 ];
 
@@ -406,87 +406,154 @@ export default function Onboarding() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <Animated.View style={[styles.header, animatedHeaderStyle]}>
-        <View style={styles.iconCircle}>
-          <StepIcon size={48} color={stepInfo.color} strokeWidth={2.5} />
-        </View>
-      </Animated.View>
+      <StatusBar barStyle="dark-content" />
+      
+      {/* Dynamic Background Elements */}
+      <View style={[styles.bgCircle, { backgroundColor: stepInfo.color, top: -width * 0.2, left: -width * 0.2 }]} />
+      <View style={[styles.bgCircle, { backgroundColor: stepInfo.color, bottom: -width * 0.3, right: -width * 0.2 }]} />
 
-      <View style={styles.cardWrapper}>
-        <View style={styles.card}>
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${(currentStep / ONBOARDING_STEPS.length) * 100}%`, backgroundColor: stepInfo.color }]} />
+      <ScrollView 
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
+        <Animated.View style={styles.header}>
+          <View style={styles.iconCircle}>
+            <StepIcon size={40} color={stepInfo.color} strokeWidth={2.5} />
+          </View>
+        </Animated.View>
+
+        <View style={styles.cardWrapper}>
+          <BlurView intensity={80} tint="light" style={styles.cardBlur}>
+            <View style={styles.card}>
+              <View style={styles.progressContainer}>
+                <View style={styles.progressBar}>
+                  <View style={[styles.progressFill, { width: `${(currentStep / ONBOARDING_STEPS.length) * 100}%`, backgroundColor: stepInfo.color }]} />
+                </View>
+                <Text style={styles.progressText}>{currentStep} / 12</Text>
+              </View>
+
+              <View style={styles.titleContainer}>
+                <Text style={styles.title}>{stepInfo.title}</Text>
+                <Text style={styles.subtitle}>{stepInfo.subtitle}</Text>
+              </View>
+
+              <View style={styles.content}>{renderStepContent()}</View>
+
+              <View style={styles.footer}>
+                {currentStep > 1 && (
+                  <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+                    <ChevronLeft size={24} color="#6b7280" />
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity 
+                  style={[styles.continueButton, { backgroundColor: stepInfo.color }]} 
+                  onPress={handleNext}
+                  disabled={isLoading}
+                >
+                  {isLoading ? <ActivityIndicator color="#fff" /> : (
+                    <>
+                      <Text style={styles.continueText}>{currentStep === 12 ? "Enter Dashboard" : "Continue"}</Text>
+                      <ChevronRight size={18} color="#fff" />
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text style={styles.progressText}>Step {currentStep} of 12</Text>
-          </View>
-
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.cardScroll}>
-            <Text style={styles.title}>{stepInfo.title}</Text>
-            <Text style={styles.subtitle}>{stepInfo.subtitle}</Text>
-            <View style={styles.content}>{renderStepContent()}</View>
-          </ScrollView>
-
-          <View style={styles.footer}>
-            {currentStep > 1 && (
-              <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-                <ChevronLeft size={24} color="#6b7280" />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity 
-              style={[styles.continueButton, { backgroundColor: stepInfo.color }]} 
-              onPress={handleNext}
-              disabled={isLoading}
-            >
-              {isLoading ? <ActivityIndicator color="#fff" /> : (
-                <>
-                  <Text style={styles.continueText}>{currentStep === 12 ? "Enter Dashboard" : "Continue"}</Text>
-                  <ChevronRight size={20} color="#fff" />
-                </>
-              )}
-            </TouchableOpacity>
-          </View>
+          </BlurView>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { height: height * 0.3, justifyContent: 'center', alignItems: 'center', paddingTop: 20 },
-  iconCircle: { width: 90, height: 90, borderRadius: 45, backgroundColor: '#fff', justifyContent: 'center', alignItems: 'center', elevation: 10, shadowOpacity: 0.1, shadowRadius: 10 },
-  cardWrapper: { flex: 1, marginTop: -30, borderTopLeftRadius: 35, borderTopRightRadius: 35, backgroundColor: '#fff', overflow: 'hidden' },
-  card: { flex: 1, padding: 24 },
-  progressContainer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 },
-  progressBar: { flex: 1, height: 5, backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: 3, marginRight: 15, overflow: 'hidden' },
-  progressFill: { height: '100%', borderRadius: 3 },
-  progressText: { fontSize: 12, fontWeight: '700', color: '#9ca3af' },
-  cardScroll: { flexGrow: 1, paddingBottom: 100 },
-  title: { fontSize: 26, fontWeight: '800', color: '#111827', marginBottom: 6 },
-  subtitle: { fontSize: 15, color: '#6b7280', marginBottom: 25 },
-  content: { flex: 1 },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#FAFAF8' 
+  },
+  bgCircle: {
+    position: 'absolute',
+    width: width * 1.5,
+    height: width * 1.5,
+    borderRadius: width * 0.75,
+    opacity: 0.03,
+  },
+  header: { 
+    height: height * 0.2, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    paddingTop: 40 
+  },
+  iconCircle: { 
+    width: 80, 
+    height: 80, 
+    borderRadius: 40, 
+    backgroundColor: '#fff', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    shadowOpacity: 0.05, 
+    shadowRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.02)',
+  },
+  cardWrapper: { 
+    flex: 1, 
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  cardBlur: {
+    borderRadius: 32,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.5)',
+  },
+  card: { 
+    padding: 28,
+    minHeight: height * 0.65,
+  },
+  progressContainer: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    marginBottom: 24 
+  },
+  progressBar: { 
+    flex: 1, 
+    height: 4, 
+    backgroundColor: 'rgba(0,0,0,0.03)', 
+    borderRadius: 2, 
+    marginRight: 12, 
+    overflow: 'hidden' 
+  },
+  progressFill: { height: '100%', borderRadius: 2 },
+  progressText: { fontSize: 11, fontWeight: '700', color: 'rgba(0,0,0,0.3)', letterSpacing: 1 },
+  titleContainer: {
+    marginBottom: 24,
+  },
+  title: { fontSize: 28, fontWeight: '900', color: '#2D3436', marginBottom: 8, letterSpacing: -0.5 },
+  subtitle: { fontSize: 15, color: 'rgba(45, 52, 54, 0.5)', lineHeight: 22, fontWeight: '400' },
+  content: { flex: 1, marginBottom: 80 },
   stepContainer: { width: '100%' },
-  label: { fontSize: 14, fontWeight: '700', color: '#374151', marginBottom: 10 },
-  input: { height: 50, backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: 12, paddingHorizontal: 16, fontSize: 16, borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)' },
-  textArea: { height: 100, backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: 12, padding: 16, fontSize: 16, borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', textAlignVertical: 'top' },
+  label: { fontSize: 13, fontWeight: '800', color: '#2D3436', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 1, opacity: 0.6 },
+  input: { height: 56, backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: 16, paddingHorizontal: 20, fontSize: 16, borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', color: '#2D3436' },
+  textArea: { height: 120, backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: 16, padding: 20, fontSize: 16, borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', textAlignVertical: 'top', color: '#2D3436' },
   chipGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  chip: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(0,0,0,0.1)', backgroundColor: 'transparent' },
-  chipActive: { backgroundColor: '#34d399', borderColor: '#34d399' },
-  chipText: { fontSize: 14, fontWeight: '600', color: '#4b5563' },
+  chip: { paddingHorizontal: 24, paddingVertical: 12, borderRadius: 16, borderWidth: 1.5, borderColor: 'rgba(0,0,0,0.05)', backgroundColor: 'transparent' },
+  chipActive: { backgroundColor: '#996515', borderColor: '#996515' },
+  chipText: { fontSize: 14, fontWeight: '600', color: '#2D3436' },
   chipTextActive: { color: '#fff' },
-  switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.05)' },
-  switchLabel: { fontSize: 16, fontWeight: '600', color: '#374151' },
-  consentCard: { padding: 24, backgroundColor: 'rgba(0,0,0,0.02)', borderRadius: 24, alignItems: 'center', marginBottom: 24 },
-  consentTitle: { fontSize: 20, fontWeight: '800', color: '#111827', marginBottom: 10 },
-  consentBody: { fontSize: 14, color: '#6b7280', textAlign: 'center', lineHeight: 22 },
-  consentToggle: { flexDirection: 'row', alignItems: 'center', padding: 20, borderRadius: 20, borderWidth: 2, borderColor: 'rgba(0,0,0,0.05)', gap: 12 },
-  consentToggleActive: { borderColor: '#475569', backgroundColor: 'rgba(71, 85, 105, 0.05)' },
-  consentToggleText: { fontSize: 16, fontWeight: '700', color: '#9ca3af' },
-  consentToggleTextActive: { color: '#475569' },
-  footer: { position: 'absolute', bottom: 20, left: 24, right: 24, flexDirection: 'row', gap: 12, backgroundColor: '#fff', paddingTop: 10 },
-  backButton: { width: 52, height: 52, borderRadius: 26, backgroundColor: 'rgba(0,0,0,0.05)', justifyContent: 'center', alignItems: 'center' },
-  continueButton: { flex: 1, height: 52, borderRadius: 26, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 6, elevation: 5 },
-  continueText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  switchRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.03)' },
+  switchLabel: { fontSize: 16, fontWeight: '600', color: '#2D3436' },
+  consentCard: { padding: 32, backgroundColor: 'rgba(153, 101, 21, 0.03)', borderRadius: 24, alignItems: 'center', marginBottom: 24, borderWidth: 1, borderColor: 'rgba(153, 101, 21, 0.1)' },
+  consentTitle: { fontSize: 20, fontWeight: '900', color: '#2D3436', marginBottom: 12 },
+  consentBody: { fontSize: 14, color: 'rgba(45, 52, 54, 0.6)', textAlign: 'center', lineHeight: 22 },
+  consentToggle: { flexDirection: 'row', alignItems: 'center', padding: 22, borderRadius: 20, borderWidth: 1.5, borderColor: 'rgba(0,0,0,0.05)', gap: 12, backgroundColor: '#fff' },
+  consentToggleActive: { borderColor: '#996515', backgroundColor: 'rgba(153, 101, 21, 0.02)' },
+  consentToggleText: { fontSize: 15, fontWeight: '700', color: 'rgba(0,0,0,0.2)' },
+  consentToggleTextActive: { color: '#996515' },
+  footer: { position: 'absolute', bottom: 24, left: 28, right: 28, flexDirection: 'row', gap: 12, paddingTop: 20 },
+  backButton: { width: 56, height: 56, borderRadius: 20, backgroundColor: 'rgba(0,0,0,0.03)', justifyContent: 'center', alignItems: 'center' },
+  continueButton: { flex: 1, height: 56, borderRadius: 20, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8, shadowColor: '#996515', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8, elevation: 5 },
+  continueText: { color: '#fff', fontSize: 16, fontWeight: '800', letterSpacing: 0.5 },
 });

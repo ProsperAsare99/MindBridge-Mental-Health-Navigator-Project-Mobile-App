@@ -111,16 +111,16 @@ function ScaleItem({ option, selected, onPress, activeColor, isFirst, isLast }: 
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingVertical: 20,
+    paddingVertical: 12,
   },
   track: {
     flexDirection: 'row',
-    height: 56,
-    backgroundColor: 'rgba(0,0,0,0.02)',
-    borderRadius: 28,
+    height: 64,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    borderRadius: 32,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.05)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(153, 101, 21, 0.1)',
   },
   itemWrapper: {
     flex: 1,
@@ -129,35 +129,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   roundedFirst: {
-    borderTopLeftRadius: 28,
-    borderBottomLeftRadius: 28,
+    borderTopLeftRadius: 32,
+    borderBottomLeftRadius: 32,
   },
   roundedLast: {
-    borderTopRightRadius: 28,
-    borderBottomRightRadius: 28,
+    borderTopRightRadius: 32,
+    borderBottomRightRadius: 32,
   },
   item: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
   emoji: {
-    fontSize: 22,
+    fontSize: 24,
   },
   value: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
   },
   labelContainer: {
-    marginTop: 16,
+    marginTop: 12,
     alignItems: 'center',
   },
   activeLabel: {
-    fontSize: 14,
-    fontWeight: '800',
+    fontSize: 13,
+    fontWeight: '700',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 2,
+    opacity: 0.8,
   },
 });

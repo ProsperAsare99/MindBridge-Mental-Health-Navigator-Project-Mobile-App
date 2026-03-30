@@ -69,12 +69,12 @@ function OptionCard({ option, selected, disabled, onPress, Icon }: any) {
       borderColor: interpolateColor(
         progress.value,
         [0, 1],
-        ['rgba(0,0,0,0.05)', '#2563eb']
+        ['rgba(0,0,0,0.05)', '#996515']
       ),
       backgroundColor: interpolateColor(
         progress.value,
         [0, 1],
-        ['#ffffff', 'rgba(37, 99, 235, 0.05)']
+        ['#ffffff', 'rgba(153, 101, 21, 0.05)']
       ),
       transform: [{ scale: withSpring(selected ? 1.02 : 1) }],
       opacity: disabled ? 0.3 : 1
@@ -86,7 +86,7 @@ function OptionCard({ option, selected, disabled, onPress, Icon }: any) {
       color: interpolateColor(
         progress.value,
         [0, 1],
-        ['#4b5563', '#1d4ed8']
+        ['#4b5563', '#996515']
       ),
       fontWeight: selected ? '700' : '600' as any
     };
@@ -94,7 +94,7 @@ function OptionCard({ option, selected, disabled, onPress, Icon }: any) {
 
   return (
     <TouchableOpacity 
-      activeOpacity={0.7} 
+      activeOpacity={0.8} 
       onPress={onPress}
       disabled={disabled}
       style={styles.cardWrapper}
@@ -102,7 +102,7 @@ function OptionCard({ option, selected, disabled, onPress, Icon }: any) {
       <Animated.View style={[styles.card, animatedStyle]}>
         {Icon && (
           <View style={styles.iconContainer}>
-            <Icon size={24} color={selected ? '#2563eb' : '#9ca3af'} />
+            <Icon size={24} color={selected ? '#996515' : 'rgba(0,0,0,0.3)'} />
           </View>
         )}
         <Animated.Text style={[styles.label, textStyle]}>
@@ -118,28 +118,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 12,
+    paddingBottom: 20,
   },
   cardWrapper: {
-    width: (width - 48 - 12) / 2, // 2 columns with gap
-    marginBottom: 4,
+    width: '48%', // More robust than manual calculation for grid
+    marginBottom: 12,
   },
   card: {
     padding: 20,
     borderRadius: 24,
-    borderWidth: 2,
+    borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 110,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.05,
-        shadowRadius: 8,
+        shadowRadius: 10,
       },
       android: {
-        elevation: 2,
+        elevation: 3,
       },
     }),
   },

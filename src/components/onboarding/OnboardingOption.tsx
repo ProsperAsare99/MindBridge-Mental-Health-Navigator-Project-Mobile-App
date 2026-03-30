@@ -30,19 +30,19 @@ export default function OnboardingOption({ label, selected, onSelect }: Onboardi
     const borderColor = interpolateColor(
       progress.value,
       [0, 1],
-      ['rgba(0,0,0,0.05)', '#2563eb']
+      ['rgba(0,0,0,0.05)', '#996515']
     );
 
     const backgroundColor = interpolateColor(
       progress.value,
       [0, 1],
-      ['#ffffff', 'rgba(37, 99, 235, 0.05)']
+      ['#ffffff', 'rgba(153, 101, 21, 0.05)']
     );
 
     return {
       borderColor,
       backgroundColor,
-      transform: [{ scale: withSpring(selected ? 1.02 : 1) }]
+      transform: [{ scale: withSpring(selected ? 1.01 : 1) }]
     };
   });
 
@@ -50,18 +50,18 @@ export default function OnboardingOption({ label, selected, onSelect }: Onboardi
     const color = interpolateColor(
       progress.value,
       [0, 1],
-      ['#1f2937', '#1d4ed8']
+      ['#2D3436', '#996515']
     );
 
     return {
       color,
-      fontWeight: selected ? '700' : '600' as any
+      fontWeight: selected ? '700' : '500' as any
     };
   });
 
   return (
     <TouchableOpacity 
-      activeOpacity={0.7} 
+      activeOpacity={0.8} 
       onPress={onSelect}
       style={styles.pressable}
     >
@@ -72,7 +72,7 @@ export default function OnboardingOption({ label, selected, onSelect }: Onboardi
         
         {selected ? (
           <Animated.View style={styles.iconContainer}>
-            <CheckCircle2 size={24} color="#2563eb" fill="rgba(37, 99, 235, 0.1)" />
+            <CheckCircle2 size={24} color="#996515" fill="rgba(153, 101, 21, 0.1)" />
           </Animated.View>
         ) : (
           <View style={styles.radioPlaceholder} />
@@ -85,26 +85,26 @@ export default function OnboardingOption({ label, selected, onSelect }: Onboardi
 const styles = StyleSheet.create({
   pressable: {
     width: '100%',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 18,
-    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 24,
     backgroundColor: '#ffffff',
-    borderRadius: 20,
-    borderWidth: 2,
+    borderRadius: 24,
+    borderWidth: 1.5,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.05,
-        shadowRadius: 8,
+        shadowRadius: 12,
       },
       android: {
-        elevation: 2,
+        elevation: 3,
       },
     }),
   },

@@ -60,12 +60,12 @@ export default function LandingPage() {
 
           <Animated.View entering={FadeInDown.delay(900).duration(1000).easing(Easing.bezier(0.25, 0.4, 0.25, 1))} style={styles.impactContainer}>
             <MaskedView
-              style={{ width: width - 64, height: 60 }}
+              style={{ width: width - 64, height: 48 }}
               maskElement={<Text style={styles.ghanaianTitle}>Ghanaian</Text>}
             >
               <LinearGradient
-                colors={['#CE1126', '#FCD116', '#030303', '#FCD116', '#006B3F']}
-                locations={[0, 0.35, 0.5, 0.65, 1]}
+                colors={['#CE1126', '#FCD116', '#FCD116', '#006B3F']}
+                locations={[0, 0.45, 0.55, 1]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={StyleSheet.absoluteFillObject}
@@ -211,13 +211,13 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   descriptionText: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.4)',
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.75)',
     textAlign: 'center',
-    marginTop: 12,
-    lineHeight: 22,
-    fontWeight: '300',
-    maxWidth: width * 0.8,
+    marginTop: 16,
+    lineHeight: 24,
+    fontWeight: '400',
+    maxWidth: width * 0.85,
   },
   footer: {
     width: '100%',
