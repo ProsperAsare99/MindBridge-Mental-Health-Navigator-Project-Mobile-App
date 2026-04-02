@@ -8,6 +8,13 @@ import { LineChart } from 'react-native-chart-kit';
 
 const { width } = Dimensions.get('window');
 
+const hexToRGBA = (hex: string, opacity: number) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
 export default function Analytics() {
   const { colors, isDark } = useTheme();
 
@@ -16,8 +23,8 @@ export default function Analytics() {
     backgroundGradientFrom: colors.card,
     backgroundGradientTo: colors.card,
     decimalPlaces: 1,
-    color: (opacity = 1) => colors.primary.replace(')', `, ${opacity})`).replace('rgb', 'rgba'),
-    labelColor: (opacity = 1) => colors.textSecondary.replace(')', `, ${opacity})`).replace('rgb', 'rgba'),
+    color: (opacity = 1) => hexToRGBA(colors.primary, opacity),
+    labelColor: (opacity = 1) => isDark ? `rgba(255, 255, 255, ${opacity})` : `rgba(0, 0, 0, ${opacity})`,
     style: {
       borderRadius: 16,
     },
@@ -27,6 +34,7 @@ export default function Analytics() {
       stroke: colors.primary
     }
   };
+
 
   const moodData = {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
