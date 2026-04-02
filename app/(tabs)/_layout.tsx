@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, Calendar, Flower, User } from 'lucide-react-native';
+import { Home, BarChart2, ClipboardCheck, BookOpen, User } from 'lucide-react-native';
 import { useTheme } from '../../src/context/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,12 +13,17 @@ export default function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontWeight: '600',
+        },
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.border,
           height: 60 + insets.bottom,
           paddingBottom: 8 + insets.bottom,
           paddingTop: 8,
+          borderTopWidth: 1,
         },
       }}
     >
@@ -30,17 +35,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="journal"
+        name="analytics"
         options={{
-          title: 'Journal',
-          tabBarIcon: ({ color, size }) => <Calendar color={color} size={size} />,
+          title: 'Stats',
+          tabBarIcon: ({ color, size }) => <BarChart2 color={color} size={size} />,
         }}
       />
       <Tabs.Screen
-        name="garden"
+        name="assessment"
         options={{
-          title: 'Garden',
-          tabBarIcon: ({ color, size }) => <Flower color={color} size={size} />,
+          title: 'Assess',
+          tabBarIcon: ({ color, size }) => <ClipboardCheck color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="resources"
+        options={{
+          title: 'Library',
+          tabBarIcon: ({ color, size }) => <BookOpen color={color} size={size} />,
         }}
       />
       <Tabs.Screen
@@ -48,6 +60,18 @@ export default function TabLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color, size }) => <User color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="garden"
+        options={{
+          href: null, // Hidden for now, accessible from dashboard
+        }}
+      />
+      <Tabs.Screen
+        name="journal"
+        options={{
+          href: null, // Hidden for now, accessible from dashboard
         }}
       />
     </Tabs>
