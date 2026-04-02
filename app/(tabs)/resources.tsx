@@ -2,13 +2,28 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../../src/context/ThemeContext';
-import { BookOpen, Phone, MapPin, Globe, ExternalLink, GraduationCap } from 'lucide-react-native';
+import { BookOpen, Phone, MapPin, Globe, ExternalLink, GraduationCap, ShieldAlert } from 'lucide-react-native';
+
 import { BlurView } from 'expo-blur';
+
+interface ResourceItem {
+  name: string;
+  desc: string;
+  icon: any;
+  contact?: string;
+  priority?: boolean;
+  type?: string;
+}
+
+interface ResourceSection {
+  category: string;
+  items: ResourceItem[];
+}
 
 export default function Resources() {
   const { colors, isDark } = useTheme();
 
-  const resources = [
+  const resources: ResourceSection[] = [
     { 
       category: 'University Support',
       items: [
@@ -31,6 +46,7 @@ export default function Resources() {
       ]
     }
   ];
+
 
   return (
     <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: colors.background }]}>
