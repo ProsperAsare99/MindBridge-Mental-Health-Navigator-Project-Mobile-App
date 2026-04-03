@@ -1,47 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView, Animated } from 'react-native';
-import { BrainCircuit, Sparkles, Quote } from 'lucide-react-native';
+import { BrainCircuit, Sparkles, Quote, HeartPulse } from 'lucide-react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { BlurView } from 'expo-blur';
 
 const { width } = Dimensions.get('window');
-const CAROUSEL_WIDTH = width - 48;
+const CAROUSEL_WIDTH = width - 48; // Full width minus horizontal padding (24 * 2)
 
 const MOTIVATIONS = [
   {
     category: 'Resilience',
-    text: "Your journey isn't defined by the setbacks, but by the courage to rise each day.",
+    text: "You don't have to control your thoughts. You just have to stop letting them control you.",
     author: "Dan Millman",
     icon: BrainCircuit,
     color: '#3B82F6',
   },
   {
-    category: 'Mindfulness',
-    text: "You don't have to control your thoughts. You just have to stop letting them control you.",
-    author: "Dalai Lama",
-    icon: Sparkles,
-    color: '#8B5CF6',
-  },
-  {
-    category: 'Growth',
-    text: "Small steps in the right direction can lead to the biggest changes in your life.",
-    author: "Theodore Roosevelt",
-    icon: Quote,
-    color: '#10B981',
-  },
-  {
     category: 'Perspective',
     text: "Your present circumstances don't determine where you can go; they merely determine where you start.",
     author: "Nido Qubein",
-    icon: BrainCircuit,
+    icon: HeartPulse,
     color: '#F59E0B',
+  },
+  {
+    category: 'Potential',
+    text: "Believe you can and you're halfway there.",
+    author: "Theodore Roosevelt",
+    icon: Sparkles,
+    color: '#10B981',
   },
   {
     category: 'Action',
     text: "Act as if what you do makes a difference. It does.",
     author: "William James",
-    icon: Quote,
-    color: '#3B82F6',
+    icon: HeartPulse,
+    color: '#6366F1',
+  },
+  {
+    category: 'Happiness',
+    text: "Happiness is not something ready made. It comes from your own actions.",
+    author: "Dalai Lama",
+    icon: Sparkles,
+    color: '#EC4899',
+  },
+  {
+    category: 'Persistence',
+    text: "It always seems impossible until it's done.",
+    author: "Nelson Mandela",
+    icon: BrainCircuit,
+    color: '#64748B',
+  },
+  {
+    category: 'Inner Strength',
+    text: "You are capable of more than you know.",
+    author: "Glinda, The Wizard of Oz",
+    icon: Sparkles,
+    color: '#F43F5E',
   }
 ];
 
@@ -70,12 +84,14 @@ export const MotivationsCarousel = () => {
   return (
     <View style={styles.container}>
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>Growth Reflections</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Daily Reflections & Motivations</Text>
       </View>
       <ScrollView
         ref={scrollViewRef}
         horizontal
         pagingEnabled
+        snapToInterval={CAROUSEL_WIDTH}
+        decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
         onScroll={handleScroll}
@@ -103,7 +119,7 @@ export const MotivationsCarousel = () => {
                     {item.category}
                   </Text>
                 </View>
-                <Text style={[styles.text, { color: colors.text }]} numberOfLines={3}>
+                <Text style={[styles.text, { color: colors.text }]} numberOfLines={4}>
                   "{item.text}"
                 </Text>
                 <View style={styles.footer}>
@@ -138,6 +154,7 @@ export const MotivationsCarousel = () => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 24,
+    height: 280, // Explicit height for the whole component including title and pagination
   },
   sectionHeader: {
     paddingHorizontal: 24,
@@ -149,7 +166,8 @@ const styles = StyleSheet.create({
     letterSpacing: -1.5,
   },
   scrollContent: {
-    paddingHorizontal: 24,
+    paddingLeft: 24,
+    paddingRight: 8, // Adjust for the CAROUSEL_WIDTH logic
   },
   cardContainer: {
     width: CAROUSEL_WIDTH,
