@@ -1,34 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../src/hooks/useAuth';
 import { useTheme } from '../../src/context/ThemeContext';
 import { 
-  Zap, 
   HeartPulse, 
-  TrendingUp, 
-  Activity, 
   ShieldAlert, 
-  Sparkles,
   Bell,
   Search,
-  ArrowUpRight
+  ArrowUpRight,
+  ShieldCheck,
+  ChevronRight
 } from 'lucide-react-native';
-import { StatCard } from '../../src/components/dashboard/StatCard';
-import { RecommendationCard } from '../../src/components/dashboard/RecommendationCard';
 import * as Haptics from 'expo-haptics';
 import { BlurView } from 'expo-blur';
+import { getGreeting } from '../../src/utils/timeUtils';
+
+// New Components
+import { MotivationsCarousel } from '../../src/components/dashboard/MotivationsCarousel';
+import { ActivityFlowCard } from '../../src/components/dashboard/ActivityFlowCard';
+import { DailyWins } from '../../src/components/dashboard/DailyWins';
+import { QuickActionsGrid } from '../../src/components/dashboard/QuickActionsGrid';
+import { CommunityPulse } from '../../src/components/dashboard/CommunityPulse';
+import { StatCard } from '../../src/components/dashboard/StatCard';
+import { RecommendationCard } from '../../src/components/dashboard/RecommendationCard';
 
 const { width } = Dimensions.get('window');
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { colors, isDark } = useTheme();
+  const [greeting, setGreeting] = useState(getGreeting());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setGreeting(getGreeting());
+    }, 60000); // Update every minute
+    return () => clearInterval(timer);
+  }, []);
 
   const handleQuickLog = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    // Navigation to Assessment/Mood Logger
   };
+
+  const firstName = user?.name?.split(' ')[0] || 'Explorer';
 
   return (
     <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: colors.background }]}>
@@ -39,11 +54,15 @@ export default function Dashboard() {
         {/* Header Section */}
         <View style={styles.header}>
           <View>
+            <View style={styles.badgeRow}>
+              <ShieldCheck size={12} color={colors.primary} />
+              <Text style={[styles.privacyBadge, { color: colors.primary }]}>Privacy-Validated</Text>
+            </View>
             <Text style={[styles.greeting, { color: colors.textSecondary }]}>
-              Good Morning,
+              {greeting},
             </Text>
             <Text style={[styles.userName, { color: colors.text }]}>
-              {user?.name?.split(' ')[0] || 'Explorer'}
+              {firstName}
             </Text>
           </View>
           <View style={styles.headerActions}>
@@ -55,6 +74,9 @@ export default function Dashboard() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Growth Reflections Carousel */}
+        <MotivationsCarousel />
 
         {/* Daily Check-in CTA */}
         <TouchableOpacity 
@@ -82,40 +104,28 @@ export default function Dashboard() {
           </BlurView>
         </TouchableOpacity>
 
-        {/* Stats Grid */}
-        <View style={styles.statsGrid}>
-          <StatCard 
-            title="Streak" 
-            value="5 Days" 
-            icon={Zap} 
-            trend="+2" 
-            trendUp={true} 
-            color="#F59E0B"
-          />
-          <StatCard 
-            title="Avg Mood" 
-            value="Balanced" 
-            icon={Activity} 
-            trend="Stable" 
-            trendUp={true}
-            color="#10B981"
-          />
-        </View>
+        {/* Activity Flow / Weekly Trajectory */}
+        <ActivityFlowCard />
 
-        {/* Analytics Preview Placeholder */}
+        {/* Section: Wellness Journey */}
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Weekly Trajectory</Text>
-          <TouchableOpacity>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Wellness Journey</Text>
+          <TouchableOpacity style={styles.viewAllBtn}>
             <Text style={[styles.viewAll, { color: colors.primary }]}>Analysis</Text>
+            <ChevronRight size={14} color={colors.primary} />
           </TouchableOpacity>
         </View>
         
-        <View style={[styles.chartPlaceholder, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <TrendingUp size={48} color={colors.primary + '40'} strokeWidth={1} />
-          <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>
-            Log more moods to see your wellness path
-          </Text>
+        <DailyWins />
+
+        {/* Community Pulse */}
+        <CommunityPulse />
+
+        {/* Utility Grid */}
+        <View style={styles.sectionHeader}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
         </View>
+        <QuickActionsGrid />
 
         {/* Personalized Recommendations */}
         <View style={styles.sectionHeader}>
@@ -125,15 +135,8 @@ export default function Dashboard() {
         <RecommendationCard 
           title="Growth Reflection" 
           description="A curated space for your resilience. Explore mindfulness techniques tailored to your current mood."
-          icon={Sparkles}
+          icon={HeartPulse}
           tag="Mindfulness"
-        />
-
-        <RecommendationCard 
-          title="University Support" 
-          description="Access Ghanaian campus-specific counseling and wellness workshops."
-          icon={Activity}
-          tag="Resources"
         />
 
         {/* Crisis Support - Premium High-Impact Card */}
@@ -174,11 +177,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
     paddingTop: 12,
-    marginBottom: 24,
+    marginBottom: 16,
+  },
+  badgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 4,
+  },
+  privacyBadge: {
+    fontSize: 9,
+    fontWeight: '800',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   greeting: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -199,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   mainCta: {
-    marginHorizontal: 16,
+    marginHorizontal: 24,
     marginBottom: 24,
     borderRadius: 28,
     overflow: 'hidden',
@@ -234,22 +249,15 @@ const styles = StyleSheet.create({
   },
   ctaSubtitle: {
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '600',
     marginTop: 2,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 16,
-    justifyContent: 'space-between',
-    marginBottom: 8,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginTop: 16,
+    marginTop: 8,
     marginBottom: 16,
   },
   sectionTitle: {
@@ -257,33 +265,21 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: -0.5,
   },
+  viewAllBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   viewAll: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '800',
     textTransform: 'uppercase',
-  },
-  chartPlaceholder: {
-    marginHorizontal: 16,
-    height: 180,
-    borderRadius: 28,
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-    gap: 12,
-  },
-  placeholderText: {
-    fontSize: 13,
-    fontWeight: '600',
-    width: '60%',
-    textAlign: 'center',
-    lineHeight: 18,
+    letterSpacing: 0.5,
   },
   crisisCard: {
-    marginHorizontal: 16,
+    marginHorizontal: 24,
     marginTop: 8,
-    borderRadius: 28,
+    borderRadius: 32,
     overflow: 'hidden',
   },
   crisisGradient: {
