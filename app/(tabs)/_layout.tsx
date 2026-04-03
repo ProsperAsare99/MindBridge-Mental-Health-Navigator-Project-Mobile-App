@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Home, BarChart2, ClipboardCheck, BookOpen, User } from 'lucide-react-native';
+import { Home, BarChart2, ClipboardCheck, BookOpen, User, Users, ShieldAlert, Trophy, Wind, History, Settings } from 'lucide-react-native';
 import { useTheme } from '../../src/context/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -42,10 +42,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="assessment"
+        name="community"
         options={{
-          title: 'Assess',
-          tabBarIcon: ({ color, size }) => <ClipboardCheck color={color} size={size} />,
+          title: 'Social',
+          tabBarIcon: ({ color, size }) => <Users color={color} size={size} />,
         }}
       />
       <Tabs.Screen
@@ -63,15 +63,51 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="assessment"
+        options={{
+          href: null, // Hidden tab, link from dashboard
+        }}
+      />
+      <Tabs.Screen
         name="garden"
         options={{
-          href: null, // Hidden for now, accessible from dashboard
+          href: null, // Hidden tab, link from dashboard
+        }}
+      />
+      <Tabs.Screen
+        name="zen"
+        options={{
+          href: null, // Hidden tab, link from garden
+        }}
+      />
+      <Tabs.Screen
+        name="challenges"
+        options={{
+          href: null, // Hidden tab, link from garden/dashboard
+        }}
+      />
+      <Tabs.Screen
+        name="crisis"
+        options={{
+          href: null, // Hidden tab, link from dashboard/resources
+        }}
+      />
+      <Tabs.Screen
+        name="activity"
+        options={{
+          href: null, // Hidden tab, link from dashboard/mood
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          href: null, // Hidden tab, link from profile
         }}
       />
       <Tabs.Screen
         name="journal"
         options={{
-          href: null, // Hidden for now, accessible from dashboard
+          href: null, // Obsolete, replaced by activity
         }}
       />
     </Tabs>
