@@ -1,77 +1,81 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { CheckCircle2, Trophy, Clock, Zap } from 'lucide-react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { CheckCircle2, Trophy, Star, ShieldCheck } from 'lucide-react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { BlurView } from 'expo-blur';
-
-const { width } = Dimensions.get('window');
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 const WINS = [
-  { 
-    title: 'Daily Mood Log', 
-    completed: true, 
-    icon: CheckCircle2, 
-    color: '#10B981',
-    time: '2 hours ago'
-  },
-  { 
-    title: 'Mindfulness Practice', 
-    completed: false, 
-    icon: Clock, 
-    color: '#F59E0B',
-    time: 'Required'
-  },
+  { id: '1', title: 'Morning Meditation', points: 10, completed: true },
+  { id: '2', title: 'Mood Logged', points: 5, completed: true },
+  { id: '3', title: 'Community Interaction', points: 15, completed: false },
 ];
 
 export const DailyWins = () => {
   const { colors, isDark } = useTheme();
 
   return (
-    <View style={styles.container}>
+    <Animated.View 
+      entering={FadeInUp.delay(400).duration(800)}
+      style={styles.container}
+    >
       <BlurView
         intensity={isDark ? 40 : 80}
         tint={isDark ? 'dark' : 'light'}
-        style={[styles.card, { borderColor: colors.border, backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.6)' }]}
+        style={[
+          styles.card,
+          {
+            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.7)',
+          }
+        ]}
       >
         <View style={styles.header}>
-          <View style={[styles.titleIcon, { backgroundColor: '#F59E0B' + '20' }]}>
-            <Trophy size={18} color="#F59E0B" />
+          <View>
+            <Text style={[styles.title, { color: colors.text }]}>Daily Wins</Text>
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>ACHIEVE YOUR POTENTIAL</Text>
           </View>
-          <Text style={[styles.title, { color: colors.text }]}>Daily Wins</Text>
+          <View style={[styles.pointsBadge, { backgroundColor: colors.primary + '20' }]}>
+            <Trophy size={14} color={colors.primary} />
+            <Text style={[styles.pointsText, { color: colors.primary }]}>150 PTS</Text>
+          </View>
         </View>
 
-        <View style={styles.list}>
+        <View style={styles.winsList}>
           {WINS.map((win, index) => (
-            <View key={index} style={styles.winItem}>
-              <View style={[styles.winIcon, { backgroundColor: win.color + '15' }]}>
-                <win.icon size={16} color={win.color} />
+            <View 
+              key={win.id} 
+              style={[
+                styles.winItem,
+                { borderBottomColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' },
+                index === WINS.length - 1 && { borderBottomWidth: 0 }
+              ]}
+            >
+              <View style={[styles.checkbox, { backgroundColor: win.completed ? colors.primary : 'transparent', borderColor: win.completed ? colors.primary : colors.textSecondary + '40' }]}>
+                {win.completed && <CheckCircle2 size={16} color="#FFF" />}
               </View>
-              <View style={styles.winContent}>
-                <Text style={[styles.winTitle, { color: colors.text }]}>{win.title}</Text>
-                <Text style={[styles.winTime, { color: colors.textSecondary }]}>{win.time}</Text>
-              </View>
-              {win.completed && (
-                <View style={styles.completedBadge}>
-                  <Zap size={10} color="#fff" />
+              <View style={styles.winInfo}>
+                <Text style={[styles.winTitle, { color: win.completed ? colors.text : colors.textSecondary }]}>{win.title}</Text>
+                <View style={styles.pointsRow}>
+                  <Star size={10} color={colors.primary} />
+                  <Text style={[styles.winPoints, { color: colors.textSecondary }]}>+{win.points} Resilience Points</Text>
                 </View>
-              )}
+              </View>
             </View>
           ))}
         </View>
 
-        <View style={styles.footer}>
-          <Text style={[styles.footerText, { color: colors.primary }]}>
-            Score: +25 Resilience Points Today
-          </Text>
+        <View style={styles.backgroundIcon}>
+          <ShieldCheck size={120} color={isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'} />
         </View>
       </BlurView>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 24,
+    paddingHorizontal: 24,
     marginBottom: 24,
   },
   card: {
@@ -87,61 +91,74 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 16,
-  },
-  titleIcon: {
-    padding: 8,
-    borderRadius: 12,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 20,
   },
   title: {
-    fontSize: 14,
-    fontWeight: '800',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: -1.5,
   },
-  list: {
-    gap: 12,
+  subtitle: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 1.5,
+    marginTop: 2,
+  },
+  pointsBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  pointsText: {
+    fontSize: 12,
+    fontWeight: '900',
+  },
+  winsList: {
+    gap: 4,
   },
   winItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
   },
-  winIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 8,
+    borderWidth: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 16,
   },
-  winContent: {
+  winInfo: {
     flex: 1,
   },
   winTitle: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
   },
-  winTime: {
-    fontSize: 10,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  completedBadge: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#10B981',
-    justifyContent: 'center',
+  pointsRow: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    marginTop: 2,
   },
-  footer: {
-    marginTop: 16,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  winPoints: {
+    fontSize: 10,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  backgroundIcon: {
+    position: 'absolute',
+    bottom: -20,
+    right: -20,
+    zIndex: -1,
   },
   footerText: {
     fontSize: 11,

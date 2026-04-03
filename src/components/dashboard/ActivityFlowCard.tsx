@@ -4,93 +4,103 @@ import { LineChart } from 'react-native-chart-kit';
 import { Activity, ArrowUpRight, TrendingUp } from 'lucide-react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { BlurView } from 'expo-blur';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
-const CHART_WIDTH = width - 48;
 
 export const ActivityFlowCard = () => {
   const { colors, isDark } = useTheme();
 
   const data = {
-    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     datasets: [
       {
-        data: [3, 4, 3.5, 5, 4.5, 4, 4.8],
-        color: (opacity = 1) => colors.primary || `rgba(59, 130, 246, ${opacity})`,
+        data: [3, 4, 2, 5, 4, 3, 5],
+        color: (opacity = 1) => colors.primary,
         strokeWidth: 3,
       },
     ],
   };
 
   const chartConfig = {
-    backgroundGradientFrom: isDark ? '#1F2937' : '#FFFFFF',
-    backgroundGradientTo: isDark ? '#111827' : '#F9FAFB',
-    backgroundColor: isDark ? '#111827' : '#FFFFFF',
-    color: (opacity = 1) => isDark ? `rgba(255, 255, 255, ${opacity * 0.5})` : `rgba(0, 0, 0, ${opacity * 0.3})`,
-    labelColor: (opacity = 1) => isDark ? `rgba(255, 255, 255, ${opacity * 0.5})` : `rgba(0, 0, 0, ${opacity * 0.4})`,
-    strokeWidth: 2,
-    barPercentage: 0.5,
-    useShadowColorFromDataset: false,
-    propsForDots: {
-      r: '4',
-      strokeWidth: '2',
-      stroke: colors.primary,
+    backgroundGradientFrom: colors.card,
+    backgroundGradientTo: colors.card,
+    decimalPlaces: 0,
+    color: (opacity = 1) => colors.primary,
+    labelColor: (opacity = 1) => colors.textSecondary,
+    style: {
+      borderRadius: 16,
     },
-    decimalPlaces: 1,
+    propsForDots: {
+      r: '5',
+      strokeWidth: '2',
+      stroke: colors.card,
+    },
+    propsForBackgroundLines: {
+      strokeDasharray: '', // solid background lines
+      stroke: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+    },
   };
 
   return (
-    <View style={styles.container}>
+    <Animated.View 
+      entering={FadeInUp.delay(200).duration(800)}
+      style={styles.container}
+    >
       <BlurView
         intensity={isDark ? 40 : 80}
         tint={isDark ? 'dark' : 'light'}
-        style={[styles.card, { borderColor: colors.border, backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.6)' }]}
+        style={[
+          styles.card,
+          {
+            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.7)',
+          }
+        ]}
       >
         <View style={styles.header}>
           <View>
             <Text style={[styles.title, { color: colors.text }]}>Activity Flow</Text>
-            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Weekly Trajectory</Text>
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>YOUR WEEKLY TRAJECTORY</Text>
           </View>
-          <View style={styles.headerActions}>
-            <View style={[styles.badge, { backgroundColor: colors.primary + '15' }]}>
-              <Activity size={12} color={colors.primary} />
-              <Text style={[styles.badgeText, { color: colors.primary }]}>12 Logs</Text>
-            </View>
-            <TouchableOpacity style={styles.iconButton}>
-              <ArrowUpRight size={18} color={colors.primary} />
-            </TouchableOpacity>
+          <View style={styles.statsBadge}>
+            <Activity size={12} color={colors.textSecondary} strokeWidth={3} />
+            <Text style={[styles.statsText, { color: colors.textSecondary }]}>12 LOGS</Text>
           </View>
         </View>
 
         <View style={styles.chartContainer}>
           <LineChart
             data={data}
-            width={CHART_WIDTH - 16}
+            width={width - 80}
             height={180}
             chartConfig={chartConfig}
             bezier
-            style={styles.chart}
-            withInnerLines={false}
+            withDots={true}
+            withInnerLines={true}
             withOuterLines={false}
-            withHorizontalLabels={false}
-            withVerticalLabels={true}
+            withVerticalLines={false}
+            withHorizontalLines={true}
+            style={styles.chart}
           />
         </View>
 
-        <View style={styles.footer}>
-          <TrendingUp size={16} color="#10B981" />
-          <Text style={[styles.footerText, { color: '#10B981' }]}>
-            +15% resilience score this week
-          </Text>
+        <TouchableOpacity style={styles.footer}>
+          <Text style={[styles.footerText, { color: colors.primary }]}>Deep Dive Analysis</Text>
+          <ArrowUpRight size={16} color={colors.primary} strokeWidth={3} />
+        </TouchableOpacity>
+
+        <View style={styles.backgroundIcon}>
+          <TrendingUp size={120} color={isDark ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)'} />
         </View>
       </BlurView>
-    </View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 24,
+    paddingHorizontal: 24,
     marginBottom: 24,
   },
   card: {
@@ -108,49 +118,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '800',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: -1.5,
   },
   subtitle: {
     fontSize: 10,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+    fontWeight: '800',
+    letterSpacing: 1.5,
     marginTop: 2,
   },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  badge: {
+  statsBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
-  badgeText: {
+  statsText: {
     fontSize: 10,
     fontWeight: '800',
-    textTransform: 'uppercase',
-  },
-  iconButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   chartContainer: {
     alignItems: 'center',
-    marginLeft: -16,
+    marginLeft: -15,
   },
   chart: {
     borderRadius: 16,
