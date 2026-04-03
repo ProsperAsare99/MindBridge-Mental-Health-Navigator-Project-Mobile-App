@@ -1,35 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity, 
+  Dimensions, 
+  Platform 
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../../src/hooks/useAuth';
-import { useTheme } from '../../src/context/ThemeContext';
 import { 
   HeartPulse, 
-  ShieldAlert, 
-  Bell,
-  Search,
-  ArrowUpRight,
-  ShieldCheck,
-  ChevronRight
+  ShieldCheck, 
+  Bell, 
+  User, 
+  Zap,
 } from 'lucide-react-native';
-import * as Haptics from 'expo-haptics';
-import { BlurView } from 'expo-blur';
+import { useTheme } from '../../src/context/ThemeContext';
+import { useAuth } from '../../src/hooks/useAuth';
 import { getGreeting } from '../../src/utils/timeUtils';
+import Animated, { FadeInUp, FadeInDown } from 'react-native-reanimated';
+import { BlurView } from 'expo-blur';
 
-// New Components
+// Components
 import { MotivationsCarousel } from '../../src/components/dashboard/MotivationsCarousel';
 import { ActivityFlowCard } from '../../src/components/dashboard/ActivityFlowCard';
 import { DailyWins } from '../../src/components/dashboard/DailyWins';
 import { QuickActionsGrid } from '../../src/components/dashboard/QuickActionsGrid';
 import { CommunityPulse } from '../../src/components/dashboard/CommunityPulse';
-import { StatCard } from '../../src/components/dashboard/StatCard';
-import { RecommendationCard } from '../../src/components/dashboard/RecommendationCard';
+import { DailyPerspective } from '../../src/components/dashboard/DailyPerspective';
+import { MoodInsight } from '../../src/components/dashboard/MoodInsight';
+import { WellnessJourney } from '../../src/components/dashboard/WellnessJourney';
+import { CarePlanTimeline } from '../../src/components/dashboard/CarePlanTimeline';
+import { SupportResourcesGrid } from '../../src/components/dashboard/SupportResourcesGrid';
 
 const { width } = Dimensions.get('window');
 
-export default function Dashboard() {
-  const { user } = useAuth();
+const DashboardScreen = () => {
   const { colors, isDark } = useTheme();
+  const { user } = useAuth();
   const [greeting, setGreeting] = useState(getGreeting());
 
   useEffect(() => {
@@ -39,168 +48,134 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleQuickLog = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  };
-
-  const firstName = user?.name?.split(' ')[0] || 'Explorer';
+  const firstName = user?.name?.split(' ')[0] || 'Guest';
 
   return (
-    <SafeAreaView edges={['top']} style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView edges={['top']} style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <ScrollView 
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         {/* Header Section */}
-        <View style={styles.header}>
-          <View>
-            <View style={styles.badgeRow}>
-              <ShieldCheck size={12} color={colors.primary} />
-              <Text style={[styles.privacyBadge, { color: colors.primary }]}>Privacy-Validated</Text>
+        <Animated.View 
+          entering={FadeInDown.duration(800)}
+          style={styles.header}
+        >
+          <View style={styles.headerTop}>
+            <View>
+              <Text style={[styles.greetingText, { color: colors.textSecondary }]}>
+                {greeting},
+              </Text>
+              <Text style={[styles.userName, { color: colors.text }]}>
+                {firstName}
+              </Text>
             </View>
-            <Text style={[styles.greeting, { color: colors.textSecondary }]}>
-              {greeting},
-            </Text>
-            <Text style={[styles.userName, { color: colors.text }]}>
-              {firstName}
-            </Text>
+            <View style={styles.headerActions}>
+              <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.card, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}>
+                <Bell size={20} color={colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.card, borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}>
+                <User size={20} color={colors.text} />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.headerActions}>
-            <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.card }]}>
-              <Search size={20} color={colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconButton, { backgroundColor: colors.card }]}>
-              <Bell size={20} color={colors.text} />
+
+          <View style={styles.headerStatusRow}>
+            <View style={styles.privacyBadge}>
+              <ShieldCheck size={10} color={colors.primary} />
+              <Text style={[styles.privacyText, { color: colors.textSecondary }]}>PRIVACY-VALIDATED</Text>
+            </View>
+            <TouchableOpacity style={[styles.checkInButton, { backgroundColor: colors.primary }]}>
+              <HeartPulse size={16} color="#FFF" strokeWidth={3} />
+              <Text style={styles.checkInButtonText}>DAILY CHECK-IN</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
 
         {/* Growth Reflections Carousel */}
         <MotivationsCarousel />
 
-        {/* Daily Check-in CTA */}
-        <TouchableOpacity 
-          activeOpacity={0.9}
-          onPress={handleQuickLog}
-          style={styles.mainCta}
-        >
-          <BlurView
-            intensity={isDark ? 50 : 80}
-            tint={isDark ? 'dark' : 'light'}
-            style={[styles.ctaBlur, { borderColor: colors.primary + '30' }]}
-          >
-            <View style={styles.ctaContent}>
-              <View style={[styles.ctaIconContainer, { backgroundColor: colors.primary }]}>
-                <HeartPulse size={28} color="#fff" />
-              </View>
-              <View style={styles.ctaTextContainer}>
-                <Text style={[styles.ctaTitle, { color: colors.text }]}>Daily Check-in</Text>
-                <Text style={[styles.ctaSubtitle, { color: colors.textSecondary }]}>
-                  How is your mind feeling today?
-                </Text>
-              </View>
-              <ArrowUpRight size={20} color={colors.primary} />
-            </View>
-          </BlurView>
-        </TouchableOpacity>
+        {/* Daily Perspective & AI Insights */}
+        <DailyPerspective moodStats={{ streak: 7, average: 4.5, count: 12 }} />
+        <MoodInsight />
 
-        {/* Activity Flow / Weekly Trajectory */}
+        {/* Analytics & Activity Flow */}
         <ActivityFlowCard />
 
-        {/* Section: Wellness Journey */}
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Wellness Journey</Text>
-          <TouchableOpacity style={styles.viewAllBtn}>
-            <Text style={[styles.viewAll, { color: colors.primary }]}>Analysis</Text>
-            <ChevronRight size={14} color={colors.primary} />
-          </TouchableOpacity>
-        </View>
-        
+        {/* Daily Wins & Streaks */}
         <DailyWins />
+        <WellnessJourney />
 
         {/* Community Pulse */}
         <CommunityPulse />
 
-        {/* Utility Grid */}
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
-        </View>
+        {/* Care Plan & Roadmap */}
+        <CarePlanTimeline />
+
+        {/* Quick Actions Grid */}
         <QuickActionsGrid />
 
-        {/* Personalized Recommendations */}
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>For Your Resilience</Text>
-        </View>
+        {/* University Support Resources */}
+        <SupportResourcesGrid />
 
-        <RecommendationCard 
-          title="Growth Reflection" 
-          description="A curated space for your resilience. Explore mindfulness techniques tailored to your current mood."
-          icon={HeartPulse}
-          tag="Mindfulness"
-        />
-
-        {/* Crisis Support - Premium High-Impact Card */}
-        <TouchableOpacity style={styles.crisisCard}>
-          <View style={[styles.crisisGradient, { backgroundColor: isDark ? '#EF444420' : '#EF4444' }]}>
-            <View style={styles.crisisHeader}>
-              <ShieldAlert size={24} color={isDark ? '#EF4444' : '#FFF'} />
-              <Text style={[styles.crisisTitle, { color: isDark ? '#EF4444' : '#FFF' }]}>
-                Crisis Support
+        {/* Crisis Support - High Impact Card */}
+        <Animated.View entering={FadeInUp.delay(900).duration(800)} style={styles.crisisSection}>
+          <BlurView
+            intensity={40}
+            tint="dark"
+            style={styles.crisisCard}
+          >
+            <View style={styles.crisisContent}>
+              <View style={styles.crisisHeader}>
+                <Zap size={24} color="#EF4444" fill="#EF4444" />
+                <Text style={styles.crisisTitle}>Crisis Support</Text>
+              </View>
+              <Text style={styles.crisisDescription}>
+                Our Ghanaian support network is available 24/7 if things feel heavy.
               </Text>
+              <TouchableOpacity style={styles.crisisButton}>
+                <Text style={styles.crisisButtonText}>GET SUPPORT NOW</Text>
+              </TouchableOpacity>
             </View>
-            <Text style={[styles.crisisDescription, { color: isDark ? '#EF4444CC' : '#FFFFF0' }]}>
-              Our support network is available 24/7 if things feel heavy.
-            </Text>
-            <View style={[styles.crisisButton, { backgroundColor: isDark ? '#EF4444' : '#FFF' }]}>
-              <Text style={[styles.crisisButtonText, { color: isDark ? '#FFF' : '#EF4444' }]}>
-                Get Help Now
-              </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
+          </BlurView>
+        </Animated.View>
 
+        <View style={styles.footerSpacer} />
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
   },
   scrollContent: {
     paddingBottom: 40,
   },
   header: {
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 24,
+    gap: 20,
+  },
+  headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingTop: 12,
-    marginBottom: 16,
   },
-  badgeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginBottom: 4,
-  },
-  privacyBadge: {
-    fontSize: 9,
-    fontWeight: '800',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  greeting: {
-    fontSize: 14,
+  greetingText: {
+    fontSize: 16,
     fontWeight: '700',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.5,
   },
   userName: {
-    fontSize: 32,
-    fontWeight: '800',
-    letterSpacing: -1,
+    fontSize: 42,
+    fontWeight: '900',
+    letterSpacing: -2,
+    lineHeight: 48,
+    marginTop: -4,
   },
   headerActions: {
     flexDirection: 'row',
@@ -212,104 +187,93 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
   },
-  mainCta: {
-    marginHorizontal: 24,
-    marginBottom: 24,
-    borderRadius: 28,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  ctaBlur: {
-    padding: 20,
-    borderWidth: 1.5,
-  },
-  ctaContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ctaIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  ctaTextContainer: {
-    flex: 1,
-  },
-  ctaTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-  },
-  ctaSubtitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    marginTop: 2,
-  },
-  sectionHeader: {
+  headerStatusRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    marginTop: 8,
-    marginBottom: 16,
   },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    letterSpacing: -0.5,
-  },
-  viewAllBtn: {
+  privacyBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 6,
+    backgroundColor: 'rgba(0,0,0,0.03)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
   },
-  viewAll: {
-    fontSize: 12,
-    fontWeight: '800',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+  privacyText: {
+    fontSize: 9,
+    fontWeight: '900',
+    letterSpacing: 1,
+  },
+  checkInButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  checkInButtonText: {
+    color: '#FFF',
+    fontSize: 11,
+    fontWeight: '900',
+    letterSpacing: 1,
+  },
+  crisisSection: {
+    paddingHorizontal: 24,
+    marginBottom: 24,
   },
   crisisCard: {
-    marginHorizontal: 24,
-    marginTop: 8,
     borderRadius: 32,
     overflow: 'hidden',
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(239, 68, 68, 0.2)',
   },
-  crisisGradient: {
+  crisisContent: {
     padding: 24,
+    gap: 16,
   },
   crisisHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 12,
+    gap: 12,
   },
   crisisTitle: {
+    color: '#FFF',
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: '900',
+    letterSpacing: -1,
   },
   crisisDescription: {
+    color: 'rgba(255,255,255,0.8)',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     lineHeight: 20,
-    marginBottom: 20,
   },
   crisisButton: {
+    backgroundColor: '#EF4444',
     paddingVertical: 14,
     borderRadius: 16,
     alignItems: 'center',
   },
   crisisButtonText: {
-    fontSize: 14,
-    fontWeight: '800',
-    textTransform: 'uppercase',
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: '900',
     letterSpacing: 1,
   },
+  footerSpacer: {
+    height: 40,
+  },
 });
+
+export default DashboardScreen;

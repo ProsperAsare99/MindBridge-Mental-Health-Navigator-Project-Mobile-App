@@ -161,4 +161,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '700',
   },
+  backgroundIcon: {
+    position: 'absolute',
+    bottom: -20,
+    right: -20,
+    zIndex: -1,
+  },
 });
