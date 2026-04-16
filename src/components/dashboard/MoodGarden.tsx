@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, ActivityIndicator } from 'react-native';
 import Animated, { 
     useAnimatedStyle, 
     withSpring, 
@@ -126,7 +126,7 @@ export const MoodGarden = ({ level, health, plantType = 'oak', loading, artifact
                 </View>
 
                 {/* Particles */}
-                <View style={[StyleSheet.absoluteFill, { pointerEvents: 'none' }]}>
+                <View pointerEvents="none" style={StyleSheet.absoluteFill}>
                     <Particle delay={0} xOffset={0} />
                     <Particle delay={1000} xOffset={20} />
                     <Particle delay={2000} xOffset={-20} />

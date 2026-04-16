@@ -33,6 +33,8 @@ import { MoodInsight } from '../../src/components/dashboard/MoodInsight';
 import { WellnessJourney } from '../../src/components/dashboard/WellnessJourney';
 import { CarePlanTimeline } from '../../src/components/dashboard/CarePlanTimeline';
 import { SupportResourcesGrid } from '../../src/components/dashboard/SupportResourcesGrid';
+import { MoodGarden } from '../../src/components/dashboard/MoodGarden';
+import wellnessService, { GamificationStats } from '../../src/services/wellnessService';
 
 const { width } = Dimensions.get('window');
 
@@ -40,8 +42,22 @@ const DashboardScreen = () => {
   const { colors, isDark } = useTheme();
   const { user } = useAuth();
   const [greeting, setGreeting] = useState(getGreeting());
+  const [stats, setStats] = useState<GamificationStats | null>(null);
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  const fetchStats = async () => {
+    try {
+      const data = await wellnessService.getStats();
+      setStats(data);
+    } catch (error) {
+      console.error('Failed to fetch gamification stats:', error);
+    } finally {
+      setLoadingStats(false);
+    }
+  };
 
   useEffect(() => {
+    fetchStats();
     const timer = setInterval(() => {
       setGreeting(getGreeting());
     }, 60000); // Update every minute
@@ -96,8 +112,16 @@ const DashboardScreen = () => {
         <MotivationsCarousel />
 
         {/* Daily Perspective & AI Insights */}
-        <DailyPerspective moodStats={{ streak: 7, average: 4.5, count: 12 }} />
+        <DailyPerspective moodStats={{ streak: stats?.streak || 0, average: 4.5, count: 12 }} />
         <MoodInsight />
+
+        {/* The Mood Garden - Central Visual Hook */}
+        <MoodGarden 
+          level={stats?.garden.growthLevel || 1} 
+          health={stats?.garden.healthScore || 100} 
+          loading={loadingStats}
+          artifacts={['GARDEN_ARTIFACT_LANTERN']} // Example artifact
+        />
 
         {/* Analytics & Activity Flow */}
         <ActivityFlowCard />
